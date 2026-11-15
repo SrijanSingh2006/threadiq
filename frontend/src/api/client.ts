@@ -110,6 +110,8 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
   if (cleanEndpoint.includes('/experiments/') && cleanEndpoint.includes('/statistics')) {
     return {
       experiment_id: 1,
+      experiment_name: 'EXP-SIZE-FIT-01: Smart Size Recommender v2',
+      experiment_code: 'EXP-SIZE-FIT-01',
       control: { sample_size: 15420, conversions: 527, conversion_rate: 3.42, ci_lower_95: 3.13, ci_upper_95: 3.71 },
       variant: { sample_size: 15380, conversions: 638, conversion_rate: 4.15, ci_lower_95: 3.83, ci_upper_95: 4.47 },
       relative_lift_percent: 21.35,
@@ -117,7 +119,10 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
       z_score: 3.48,
       p_value: 0.0005,
       is_significant: true,
-      confidence_level: '99% Significant'
+      confidence_level: '99% Significant',
+      confidence_level_percent: 99,
+      decision: 'Scale Variant B to 100% rollout.',
+      conclusion: 'Two-proportion z-test confirms conversion lift exceeds minimum detectable effect (MDE).'
     } as unknown as T;
   }
 

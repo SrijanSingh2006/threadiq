@@ -9,7 +9,8 @@ from backend.app.services.seed_service import seed_database
 
 # Routers
 from backend.app.routers import (
-    auth, overview, research, market, storefront,
+    auth, workspaces, users, notifications,
+    overview, research, market, storefront,
     analytics, experiment, operations, delivery,
     supply_chain, copilot, reports, settings as settings_router
 )
@@ -44,20 +45,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register routers
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(overview.router, prefix=settings.API_V1_STR)
-app.include_router(research.router, prefix=settings.API_V1_STR)
-app.include_router(market.router, prefix=settings.API_V1_STR)
-app.include_router(storefront.router, prefix=settings.API_V1_STR)
-app.include_router(analytics.router, prefix=settings.API_V1_STR)
-app.include_router(experiment.router, prefix=settings.API_V1_STR)
-app.include_router(operations.router, prefix=settings.API_V1_STR)
-app.include_router(delivery.router, prefix=settings.API_V1_STR)
-app.include_router(supply_chain.router, prefix=settings.API_V1_STR)
-app.include_router(copilot.router, prefix=settings.API_V1_STR)
-app.include_router(reports.router, prefix=settings.API_V1_STR)
-app.include_router(settings_router.router, prefix=settings.API_V1_STR)
+# Register routers under /api and /api/v1 for unified backward & v1 compatibility
+for prefix in ["/api", "/api/v1"]:
+    app.include_router(auth.router, prefix=prefix)
+    app.include_router(workspaces.router, prefix=prefix)
+    app.include_router(users.router, prefix=prefix)
+    app.include_router(notifications.router, prefix=prefix)
+    app.include_router(overview.router, prefix=prefix)
+    app.include_router(research.router, prefix=prefix)
+    app.include_router(market.router, prefix=prefix)
+    app.include_router(storefront.router, prefix=prefix)
+    app.include_router(analytics.router, prefix=prefix)
+    app.include_router(experiment.router, prefix=prefix)
+    app.include_router(operations.router, prefix=prefix)
+    app.include_router(delivery.router, prefix=prefix)
+    app.include_router(supply_chain.router, prefix=prefix)
+    app.include_router(copilot.router, prefix=prefix)
+    app.include_router(reports.router, prefix=prefix)
+    app.include_router(settings_router.router, prefix=prefix)
 
 @app.get("/api/health")
 @app.get("/health")

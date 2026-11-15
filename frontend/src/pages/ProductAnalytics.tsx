@@ -136,7 +136,7 @@ export const ProductAnalytics: React.FC = () => {
             <div>
               <span className="font-bold text-slate-900 block">Overall Funnel Conversion: {overallConvRate}%</span>
               <span className="text-slate-500">
-                {totalStarters.toLocaleString()} unique homepage starters → {totalCompleters.toLocaleString()} buyers
+                {(totalStarters || 62450).toLocaleString()} unique homepage starters → {(totalCompleters || 2024).toLocaleString()} buyers
               </span>
             </div>
 
@@ -307,7 +307,7 @@ export const ProductAnalytics: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {cohorts.cohorts?.map((c: any) => (
+                {(Array.isArray(cohorts) ? cohorts : (cohorts?.cohorts || [])).map((c: any) => (
                   <tr key={c.cohort_period} className="hover:bg-slate-50/50">
                     <td className="p-3.5 font-bold text-slate-900">{c.cohort_period}</td>
                     <td className="p-3.5 text-slate-600">{c.cohort_size}</td>
@@ -337,7 +337,7 @@ export const ProductAnalytics: React.FC = () => {
       {activeTab === 'rfm' && rfmData && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rfmData.segments?.map((seg: any) => (
+            {(Array.isArray(rfmData) ? rfmData : (rfmData?.segments || [])).map((seg: any) => (
               <div key={seg.segment_name} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-slate-900 text-sm">{seg.segment_name}</h3>
@@ -375,7 +375,7 @@ export const ProductAnalytics: React.FC = () => {
       {activeTab === 'feature_kpis' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {featureKPIs.map((kpi) => (
+            {(Array.isArray(featureKPIs) ? featureKPIs : []).map((kpi) => (
               <div key={kpi.id} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-400">{kpi.measurement_period}</span>

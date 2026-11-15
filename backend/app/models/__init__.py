@@ -1,5 +1,23 @@
 from backend.app.database import Base
-from backend.app.models.auth import User, AuditLog
+from backend.app.models.auth import (
+    User,
+    UserProfile,
+    UserSession,
+    RefreshToken,
+    PasswordResetToken,
+    EmailVerificationToken,
+    AuditLog,
+)
+from backend.app.models.workspace import (
+    Workspace,
+    WorkspaceMembership,
+    WorkspaceInvitation,
+    WorkspaceSetting,
+)
+from backend.app.models.notifications import (
+    Notification,
+    NotificationPreference,
+)
 from backend.app.models.research import (
     ResearchProject,
     Interview,
@@ -65,7 +83,18 @@ from backend.app.models.delivery import (
 __all__ = [
     "Base",
     "User",
+    "UserProfile",
+    "UserSession",
+    "RefreshToken",
+    "PasswordResetToken",
+    "EmailVerificationToken",
     "AuditLog",
+    "Workspace",
+    "WorkspaceMembership",
+    "WorkspaceInvitation",
+    "WorkspaceSetting",
+    "Notification",
+    "NotificationPreference",
     "ResearchProject",
     "Interview",
     "Survey",

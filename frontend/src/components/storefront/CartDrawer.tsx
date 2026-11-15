@@ -108,8 +108,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <img
                     src={item.product.hero_image || item.product.image_url || getProductFallbackImage(item.product.name, item.product.category?.name, item.product.brand?.name || item.product.brand)}
                     alt={item.product.name}
-                    referrerPolicy="no-referrer"
-                    crossOrigin="anonymous"
                     onError={(e) => handleImageError(e, item.product.name, item.product.category?.name, item.product.brand?.name || item.product.brand)}
                     className="w-16 h-20 object-cover rounded-lg shrink-0 border border-slate-100"
                   />

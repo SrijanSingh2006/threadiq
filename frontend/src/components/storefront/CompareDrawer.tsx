@@ -67,8 +67,6 @@ export const CompareDrawer: React.FC<CompareDrawerProps> = ({ isOpen, onClose })
                     <img
                       src={prod.hero_image || prod.image_url || getProductFallbackImage(prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                       alt={prod.name}
-                      referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
                       onError={(e) => handleImageError(e, prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                       className="w-full h-36 object-cover rounded-lg border border-slate-200"
                     />

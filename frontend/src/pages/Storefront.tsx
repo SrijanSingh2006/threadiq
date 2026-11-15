@@ -304,8 +304,7 @@ export const Storefront: React.FC = () => {
                 <img
                   src={prod.hero_image || prod.image_url || getProductFallbackImage(prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                   alt={prod.name}
-                  referrerPolicy="no-referrer"
-                  crossOrigin="anonymous"
+                  loading="lazy"
                   onError={(e) => handleImageError(e, prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -415,8 +414,6 @@ export const Storefront: React.FC = () => {
               <img
                 src={selectedProduct.hero_image || selectedProduct.image_url || getProductFallbackImage(selectedProduct.name, selectedProduct.category?.name, selectedProduct.brand?.name || selectedProduct.brand)}
                 alt={selectedProduct.name}
-                referrerPolicy="no-referrer"
-                crossOrigin="anonymous"
                 onError={(e) => handleImageError(e, selectedProduct.name, selectedProduct.category?.name, selectedProduct.brand?.name || selectedProduct.brand)}
                 className="w-full aspect-[3/4] object-cover rounded-2xl border border-slate-200 shadow-sm"
               />

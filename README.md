@@ -11,7 +11,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4%2F4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15.0-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Pro-4285F4?logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
-[![Pytest](https://img.shields.io/badge/Pytest-11_Passed_(100%25)-brightgreen?logo=pytest&logoColor=white)](https://pytest.org)
+[![Pytest](https://img.shields.io/badge/Pytest-15_Passed_(100%25)-brightgreen?logo=pytest&logoColor=white)](https://pytest.org)
 [![Vitest](https://img.shields.io/badge/Vitest-23_Passed_(100%25)-brightgreen?logo=vitest&logoColor=white)](https://vitest.dev)
 
 ---

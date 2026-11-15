@@ -70,5 +70,7 @@ export function handleImageError(
 ): void {
   const target = e.currentTarget;
   target.onerror = null;
+  target.removeAttribute('crossorigin');
+  target.removeAttribute('referrerpolicy');
   target.src = getProductFallbackImage(name, category, brand);
 }

@@ -10,7 +10,13 @@ export const MOCK_DATA: Record<string, any> = {
       gmv: 4821950.00,
       aov: 2410.98,
       avg_return_rate: 14.8,
-      overall_conversion_rate: 3.24
+      return_rate_percent: 14.8,
+      overall_conversion_rate: 3.24,
+      purchase_conversion_rate: 3.24,
+      launch_readiness_percent: 86.4,
+      active_sprint_velocity: 34,
+      sprint_completion_percent: 68.4,
+      sprint_points_completed: 26
     },
     alerts: [
       { id: 1, type: 'warning', title: 'Size Guide Drop-off', message: 'Size chart view-to-add-to-cart dropped 4.2% on Western Wear PDPs.', timestamp: '10m ago' },
@@ -702,7 +708,14 @@ export const MOCK_DATA: Record<string, any> = {
       return_rate_percent: 14.8,
       total_return_requests: 312,
       exchange_share_percent: 42.5,
-      doorstep_swap_sla_hours: 24
+      doorstep_swap_sla_hours: 24,
+      top_return_reasons: [
+        { reason: 'Size / Fit Mismatch', count: 182, percentage: 58.2 },
+        { reason: 'Fabric / Material Not as Expected', count: 57, percentage: 18.4 },
+        { reason: 'Color Discrepancy from Photos', count: 38, percentage: 12.1 },
+        { reason: 'Defective Stitching or Packaging', count: 21, percentage: 6.8 },
+        { reason: 'Delayed Delivery After Event Date', count: 14, percentage: 4.5 }
+      ]
     },
     return_reasons: [
       { reason: 'Size / Fit Mismatch', percentage: 58.2 },

@@ -244,101 +244,119 @@ export const ExperimentationLab: React.FC = () => {
 
           {/* Statistical Engine Deep Dive */}
           <div className="lg:col-span-2 space-y-4">
-            {selectedExperiment && statsData && (
-              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono text-xs font-bold text-brand-600">{statsData.experiment_code}</span>
-                    <span className="text-xs text-slate-400">Statistical Engine: SciPy Normal CDF</span>
-                  </div>
-                  <h2 className="text-lg font-bold text-slate-900">{statsData.experiment_name}</h2>
-                  <p className="text-xs text-slate-600 mt-1">{selectedExperiment.hypothesis}</p>
-                </div>
+            {selectedExperiment && statsData && (() => {
+              const controlStats = statsData?.control || {
+                sample_size: 15420,
+                conversions: 527,
+                conversion_rate: 3.42,
+                ci_lower_95: 3.13,
+                ci_upper_95: 3.71
+              };
+              const variantStats = statsData?.variant || {
+                sample_size: 15380,
+                conversions: 638,
+                conversion_rate: 4.15,
+                ci_lower_95: 3.83,
+                ci_upper_95: 4.47
+              };
+              const relLift = statsData?.relative_lift_percent ?? 21.3;
 
-                {/* Primary Metric Comparison Cards */}
-                <div className="grid grid-cols-2 gap-4 text-xs">
-                  {/* Control */}
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex justify-between items-center text-slate-500 font-semibold">
-                      <span>Control (Baseline)</span>
-                      <span>n = {(statsData?.control?.sample_size ?? 15420).toLocaleString()}</span>
+              return (
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-mono text-xs font-bold text-brand-600">{statsData.experiment_code || selectedExperiment.code}</span>
+                      <span className="text-xs text-slate-400">Statistical Engine: SciPy Normal CDF</span>
                     </div>
-                    <div className="text-2xl font-bold text-slate-900">
-                      {statsData?.control?.conversion_rate ?? 3.42}%
+                    <h2 className="text-lg font-bold text-slate-900">{statsData.experiment_name || selectedExperiment.name}</h2>
+                    <p className="text-xs text-slate-600 mt-1">{selectedExperiment.hypothesis}</p>
+                  </div>
+
+                  {/* Primary Metric Comparison Cards */}
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    {/* Control */}
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex justify-between items-center text-slate-500 font-semibold">
+                        <span>Control (Baseline)</span>
+                        <span>n = {Number(controlStats.sample_size ?? 15420).toLocaleString()}</span>
+                      </div>
+                      <div className="text-2xl font-bold text-slate-900">
+                        {controlStats.conversion_rate ?? 3.42}%
+                      </div>
+                      <div className="text-[11px] text-slate-500">
+                        95% CI: [{controlStats.ci_lower_95 ?? 3.13}%, {controlStats.ci_upper_95 ?? 3.71}%]
+                      </div>
                     </div>
-                    <div className="text-[11px] text-slate-500">
-                      95% CI: [{statsData?.control?.ci_lower_95 ?? 3.13}%, {statsData?.control?.ci_upper_95 ?? 3.71}%]
+
+                    {/* Variant */}
+                    <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-200 space-y-2">
+                      <div className="flex justify-between items-center text-brand-800 font-semibold">
+                        <span>Variant B (Solution)</span>
+                        <span>n = {Number(variantStats.sample_size ?? 15380).toLocaleString()}</span>
+                      </div>
+                      <div className="text-2xl font-bold text-brand-900 flex items-center gap-2">
+                        <span>{variantStats.conversion_rate ?? 4.15}%</span>
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                          {relLift > 0 ? `+${relLift}%` : `${relLift}%`}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-brand-700">
+                        95% CI: [{variantStats.ci_lower_95 ?? 3.83}%, {variantStats.ci_upper_95 ?? 4.47}%]
+                      </div>
                     </div>
                   </div>
 
-                  {/* Variant */}
-                  <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-200 space-y-2">
-                    <div className="flex justify-between items-center text-brand-800 font-semibold">
-                      <span>Variant B (Solution)</span>
-                      <span>n = {(statsData?.variant?.sample_size ?? 15380).toLocaleString()}</span>
-                    </div>
-                    <div className="text-2xl font-bold text-brand-900 flex items-center gap-2">
-                      <span>{statsData?.variant?.conversion_rate ?? 4.15}%</span>
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                        {(statsData?.relative_lift_percent ?? 21.3) > 0 ? `+${statsData?.relative_lift_percent ?? 21.3}%` : `${statsData?.relative_lift_percent ?? 21.3}%`}
+                  {/* Statistical Significance & Power Banner */}
+                  <div className="p-4 rounded-xl bg-slate-900 text-white space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-300">Hypothesis Test Evaluation (α = 0.05)</span>
+                      <span
+                        className={`font-bold px-2.5 py-0.5 rounded-full ${
+                          statsData?.is_statistically_significant || statsData?.is_significant
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        }`}
+                      >
+                        {statsData?.is_statistically_significant || statsData?.is_significant ? 'Statistically Significant' : 'Inconclusive'}
                       </span>
                     </div>
-                    <div className="text-[11px] text-brand-700">
-                      95% CI: [{statsData?.variant?.ci_lower_95 ?? 3.83}%, {statsData?.variant?.ci_upper_95 ?? 4.47}%]
-                    </div>
-                  </div>
-                </div>
 
-                {/* Statistical Significance & Power Banner */}
-                <div className="p-4 rounded-xl bg-slate-900 text-white space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-300">Hypothesis Test Evaluation (α = 0.05)</span>
-                    <span
-                      className={`font-bold px-2.5 py-0.5 rounded-full ${
-                        statsData?.is_statistically_significant || statsData?.is_significant
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                      }`}
-                    >
-                      {statsData?.is_statistically_significant || statsData?.is_significant ? 'Statistically Significant' : 'Inconclusive'}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3 text-center text-xs">
-                    <div className="p-2 rounded-lg bg-slate-800">
-                      <span className="text-slate-400 block text-[10px]">Z-Score</span>
-                      <span className="font-bold text-white text-sm">{statsData?.z_score ?? 3.48}</span>
-                    </div>
-                    <div className="p-2 rounded-lg bg-slate-800">
-                      <span className="text-slate-400 block text-[10px]">P-Value</span>
-                      <span className="font-bold text-white text-sm">{statsData?.p_value ?? 0.0005}</span>
-                    </div>
-                    <div className="p-2 rounded-lg bg-slate-800">
-                      <span className="text-slate-400 block text-[10px]">Confidence</span>
-                      <span className="font-bold text-white text-sm">{statsData?.confidence_level_percent ?? 99}%</span>
-                    </div>
-                  </div>
-
-                  <div className="text-xs text-slate-300 pt-2 border-t border-slate-800">
-                    <span className="font-semibold text-white">Decision:</span> {statsData?.decision || 'Scale Variant B to 100% rollout.'}
-                  </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{statsData?.conclusion || 'Two-proportion z-test confirms conversion lift exceeds minimum detectable effect (MDE).'}</p>
-                </div>
-
-                {/* Guardrail Metrics */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
-                  <span className="font-bold text-slate-900 block">Guardrail Metrics Health</span>
-                  <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    {Object.entries(statsData?.guardrail_status || { 'Return Rate': 'Stable (-0.4%)', 'PDP Latency': 'Neutral (+12ms)', 'Cart Bounce': 'Reduced (-2.1%)' }).map(([k, v]: any) => (
-                      <div key={k} className="p-2 rounded-lg bg-white border border-slate-200/60">
-                        <span className="font-semibold text-slate-700 block capitalize">{k.replace(/_/g, ' ')}:</span>
-                        <span className="text-emerald-700 font-medium">{v}</span>
+                    <div className="grid grid-cols-3 gap-3 text-center text-xs">
+                      <div className="p-2 rounded-lg bg-slate-800">
+                        <span className="text-slate-400 block text-[10px]">Z-Score</span>
+                        <span className="font-bold text-white text-sm">{statsData?.z_score ?? 3.48}</span>
                       </div>
-                    ))}
+                      <div className="p-2 rounded-lg bg-slate-800">
+                        <span className="text-slate-400 block text-[10px]">P-Value</span>
+                        <span className="font-bold text-white text-sm">{statsData?.p_value ?? 0.0005}</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-slate-800">
+                        <span className="text-slate-400 block text-[10px]">Confidence</span>
+                        <span className="font-bold text-white text-sm">{statsData?.confidence_level_percent ?? 99}%</span>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-slate-300 pt-2 border-t border-slate-800">
+                      <span className="font-semibold text-white">Decision:</span> {statsData?.decision || 'Scale Variant B to 100% rollout.'}
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">{statsData?.conclusion || 'Two-proportion z-test confirms conversion lift exceeds minimum detectable effect (MDE).'}</p>
+                  </div>
+
+                  {/* Guardrail Metrics */}
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                    <span className="font-bold text-slate-900 block">Guardrail Metrics Health</span>
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      {Object.entries(statsData?.guardrail_status || { 'Return Rate': 'Stable (-0.4%)', 'PDP Latency': 'Neutral (+12ms)', 'Cart Bounce': 'Reduced (-2.1%)' }).map(([k, v]: any) => (
+                        <div key={k} className="p-2 rounded-lg bg-white border border-slate-200/60">
+                          <span className="font-semibold text-slate-700 block capitalize">{k.replace(/_/g, ' ')}:</span>
+                          <span className="text-emerald-700 font-medium">{v}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         </div>
       )}
