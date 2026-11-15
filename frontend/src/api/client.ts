@@ -106,6 +106,45 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
     return MOCK_DATA[basePath] as T;
   }
 
+  // Dynamic Experiment Statistics
+  if (cleanEndpoint.includes('/experiments/') && cleanEndpoint.includes('/statistics')) {
+    return {
+      experiment_id: 1,
+      control: { sample_size: 15420, conversions: 527, conversion_rate: 3.42, ci_lower_95: 3.13, ci_upper_95: 3.71 },
+      variant: { sample_size: 15380, conversions: 638, conversion_rate: 4.15, ci_lower_95: 3.83, ci_upper_95: 4.47 },
+      relative_lift_percent: 21.35,
+      absolute_difference: 0.73,
+      z_score: 3.48,
+      p_value: 0.0005,
+      is_significant: true,
+      confidence_level: '99% Significant'
+    } as unknown as T;
+  }
+
+  // Dynamic Sprint Burndown Trajectory
+  if (cleanEndpoint.includes('/delivery/sprints/') && cleanEndpoint.includes('/burndown')) {
+    const days = [
+      { day: 'Day 1', ideal_remaining_points: 42, actual_remaining_points: 42 },
+      { day: 'Day 2', ideal_remaining_points: 37.3, actual_remaining_points: 40 },
+      { day: 'Day 3', ideal_remaining_points: 32.7, actual_remaining_points: 37 },
+      { day: 'Day 4', ideal_remaining_points: 28.0, actual_remaining_points: 33 },
+      { day: 'Day 5', ideal_remaining_points: 23.3, actual_remaining_points: 29 },
+      { day: 'Day 6', ideal_remaining_points: 18.7, actual_remaining_points: 24 },
+      { day: 'Day 7', ideal_remaining_points: 14.0, actual_remaining_points: 20 },
+      { day: 'Day 8', ideal_remaining_points: 9.3, actual_remaining_points: 16 },
+      { day: 'Day 9', ideal_remaining_points: 4.7, actual_remaining_points: 13 },
+      { day: 'Day 10', ideal_remaining_points: 0, actual_remaining_points: 13 }
+    ];
+    return {
+      sprint_id: 1,
+      sprint_name: 'Sprint 14: Size Accuracy & Cart Conversion',
+      total_committed_points: 42,
+      completed_points: 13,
+      remaining_points: 29,
+      days
+    } as unknown as T;
+  }
+
   // 3. Dynamic Mutations (POST / PUT)
   if (options.method === 'POST' || options.method === 'PUT') {
     let body: any = {};

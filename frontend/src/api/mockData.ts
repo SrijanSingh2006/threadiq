@@ -557,11 +557,14 @@ export const MOCK_DATA: Record<string, any> = {
   ],
 
   '/delivery/stories': [
-    { id: 1, title: 'Implement AI Fit Advisor widget on PDP', epic: 'Size & Fit Intelligence', status: 'Done', story_points: 8, priority: 'P0', assignee: 'Rohan Verma', sprint_id: 1 },
-    { id: 2, title: 'Add Customer Body Height/Weight filter to Reviews', epic: 'Customer Research & UGC', status: 'In Review', story_points: 5, priority: 'P1', assignee: 'Ananya Iyer', sprint_id: 1 },
-    { id: 3, title: 'First-party size selection telemetry pipeline', epic: 'Event Telemetry & Analytics', status: 'In Progress', story_points: 5, priority: 'P0', assignee: 'Diya Patel', sprint_id: 1 },
-    { id: 4, title: 'One-click UPI intent payment integration', epic: 'Frictionless Checkout', status: 'In Progress', story_points: 8, priority: 'P1', assignee: 'Rohan Verma', sprint_id: 1 },
-    { id: 5, title: 'Automated 48-Hour Inbound Supplier Restock Alert', epic: 'Supply Chain Operations', status: 'Backlog', story_points: 3, priority: 'P2', assignee: 'Vikram Rao', sprint_id: 1 }
+    { id: 1, title: 'Implement AI Fit Advisor widget on PDP', epic: 'Size & Fit Intelligence', status: 'done', story_points: 8, priority: 'P0', assignee: 'Rohan Verma', owner: 'Rohan Verma', user_role: 'shopper', user_need: 'accurate size recommendation', business_value: 'reduce returns by 18%', sprint_id: 1 },
+    { id: 2, title: 'Add Customer Body Height/Weight filter to Reviews', epic: 'Customer Research & UGC', status: 'in_review', story_points: 5, priority: 'P1', assignee: 'Ananya Iyer', owner: 'Ananya Iyer', user_role: 'shopper', user_need: 'see reviews from people with my build', business_value: 'higher sizing confidence', sprint_id: 1 },
+    { id: 3, title: 'First-party size selection telemetry pipeline', epic: 'Event Telemetry & Analytics', status: 'in_progress', story_points: 5, priority: 'P0', assignee: 'Diya Patel', owner: 'Diya Patel', user_role: 'analyst', user_need: 'track micro-dropoffs', business_value: 'granular friction diagnostics', sprint_id: 1 },
+    { id: 4, title: 'One-click UPI intent payment integration', epic: 'Frictionless Checkout', status: 'in_progress', story_points: 8, priority: 'P1', assignee: 'Rohan Verma', owner: 'Rohan Verma', user_role: 'shopper', user_need: 'fast seamless UPI checkout', business_value: 'lower payment abandonment', sprint_id: 1 },
+    { id: 5, title: 'Automated 48-Hour Inbound Supplier Restock Alert', epic: 'Supply Chain Operations', status: 'todo', story_points: 3, priority: 'P2', assignee: 'Vikram Rao', owner: 'Vikram Rao', user_role: 'ops manager', user_need: 'automated low stock alerts', business_value: 'prevent size stockouts', sprint_id: 1 },
+    { id: 6, title: 'Doorstep size exchange logistics routing', epic: 'Reverse Logistics', status: 'backlog', story_points: 5, priority: 'P1', assignee: 'Vikram Rao', owner: 'Vikram Rao', user_role: 'shopper', user_need: 'doorstep size swap', business_value: 'save ₹140 per return', sprint_id: 1 },
+    { id: 7, title: 'Edge network CDN caching for PDP images', epic: 'Performance & Vitals', status: 'qa', story_points: 3, priority: 'P2', assignee: 'Meera Nair', owner: 'Meera Nair', user_role: 'shopper', user_need: 'sub-second PDP load', business_value: 'Core Web Vitals compliance', sprint_id: 1 },
+    { id: 8, title: 'Third-party brand sizing schema validator', epic: 'Catalog Operations', status: 'blocked', story_points: 5, priority: 'P1', assignee: 'Rohan Verma', owner: 'Rohan Verma', user_role: 'engineer', user_need: 'spec format enforcement', business_value: 'prevent faulty size charts', sprint_id: 1 }
   ],
 
   '/delivery/roadmap': [
@@ -691,7 +694,15 @@ export const MOCK_DATA: Record<string, any> = {
       first_attempt_delivery_rate: 89.4,
       rto_rate: 8.6,
       transit_sla_compliance: 96.2,
-      active_3pl_partners: 4
+      active_3pl_partners: 4,
+      total_stock_units: 48200,
+      aged_inventory_units_gt30d: 14
+    },
+    post_order: {
+      return_rate_percent: 14.8,
+      total_return_requests: 312,
+      exchange_share_percent: 42.5,
+      doorstep_swap_sla_hours: 24
     },
     return_reasons: [
       { reason: 'Size / Fit Mismatch', percentage: 58.2 },

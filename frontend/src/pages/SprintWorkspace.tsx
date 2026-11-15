@@ -197,7 +197,7 @@ export const SprintWorkspace: React.FC = () => {
         <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Sprint 42 Burndown Trajectory</h3>
+              <h3 className="text-sm font-bold text-slate-900">{activeSprint?.name || 'Sprint 14'} Burndown Trajectory</h3>
               <p className="text-xs text-slate-500">Ideal burn rate vs actual story points completed</p>
             </div>
             <div className="flex items-center gap-3 text-xs">
@@ -212,7 +212,7 @@ export const SprintWorkspace: React.FC = () => {
 
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={burndown.days} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+              <LineChart data={Array.isArray(burndown) ? burndown : (burndown?.days || [])} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#64748b' }} />
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
@@ -231,13 +231,14 @@ export const SprintWorkspace: React.FC = () => {
       {/* 7-Column Kanban Board */}
       <div className="space-y-3">
         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-          Sprint 42 Kanban Board (Click card to inspect or move)
+          {activeSprint?.name || 'Sprint 14'} Kanban Board (Click card to inspect or move)
         </span>
 
         <div className="grid grid-cols-1 md:grid-cols-7 gap-3 min-w-[1050px] overflow-x-auto pb-4">
           {kanbanColumns.map((col) => {
-            const columnStories = stories.filter((s) => s.status === col.key);
-            const totalPts = columnStories.reduce((sum, s) => sum + s.story_points, 0);
+            const normalizeStatus = (status: string) => (status || '').toLowerCase().replace(/[\s-]+/g, '_');
+            const columnStories = stories.filter((s) => normalizeStatus(s.status) === col.key);
+            const totalPts = columnStories.reduce((sum, s) => sum + (Number(s.story_points) || 0), 0);
 
             return (
               <div
