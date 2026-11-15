@@ -287,7 +287,11 @@ export const Storefront: React.FC = () => {
         {products.map((prod) => {
           const isWishlisted = wishlist.includes(prod.id);
           const isCompared = compareList.some((p) => p.id === prod.id);
-          const sizes = JSON.parse(prod.available_sizes_json || '["M"]');
+          const sizes = typeof prod.available_sizes_json === 'string'
+            ? JSON.parse(prod.available_sizes_json || '["M"]')
+            : (Array.isArray(prod.available_sizes_json)
+              ? prod.available_sizes_json
+              : (Array.isArray(prod.sizes) ? prod.sizes : ['S', 'M', 'L', 'XL']));
 
           return (
             <div
@@ -297,16 +301,21 @@ export const Storefront: React.FC = () => {
               {/* Product Card Image */}
               <div className="relative aspect-[3/4] overflow-hidden bg-slate-100 cursor-pointer" onClick={() => handleOpenPDP(prod)}>
                 <img
-                  src={prod.hero_image}
+                  src={prod.hero_image || prod.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
                   alt={prod.name}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
 
                 {/* Rating Badge */}
                 <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm shadow text-[10px] font-bold text-slate-800 flex items-center gap-1">
-                  <span>{prod.rating}</span>
+                  <span>{prod.rating || 4.2}</span>
                   <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  <span className="text-slate-400">| {prod.review_count}</span>
+                  <span className="text-slate-400">| {prod.review_count || 120}</span>
                 </div>
 
                 {/* Top Action Pills */}
@@ -343,7 +352,7 @@ export const Storefront: React.FC = () => {
               <div className="p-3.5 flex flex-col flex-1 justify-between text-xs">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                    {prod.brand?.name || 'Brand'}
+                    {prod.brand?.name || (typeof prod.brand === 'string' ? prod.brand : 'ThreadIQ Fashion')}
                   </span>
                   <h3
                     onClick={() => handleOpenPDP(prod)}
@@ -405,13 +414,18 @@ export const Storefront: React.FC = () => {
             {/* Image Gallery */}
             <div className="space-y-3">
               <img
-                src={selectedProduct.hero_image}
+                src={selectedProduct.hero_image || selectedProduct.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
                 alt={selectedProduct.name}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
+                }}
                 className="w-full aspect-[3/4] object-cover rounded-2xl border border-slate-200 shadow-sm"
               />
               <div className="flex items-center gap-2 text-[11px] text-slate-500 justify-center">
                 <Truck className="w-3.5 h-3.5 text-brand-600" />
-                <span>Simulated Delivery in {selectedProduct.delivery_estimate_days} Days</span>
+                <span>Simulated Delivery in {selectedProduct.delivery_estimate_days || 3} Days</span>
               </div>
             </div>
 
@@ -460,7 +474,12 @@ export const Storefront: React.FC = () => {
                 <div className="space-y-1.5">
                   <span className="font-semibold text-slate-700 block">Select Size:</span>
                   <div className="flex items-center gap-2">
-                    {JSON.parse(selectedProduct.available_sizes_json || '[]').map((sz: string) => (
+                    {(typeof selectedProduct.available_sizes_json === 'string'
+                      ? JSON.parse(selectedProduct.available_sizes_json || '["S","M","L"]')
+                      : (Array.isArray(selectedProduct.available_sizes_json)
+                        ? selectedProduct.available_sizes_json
+                        : (Array.isArray(selectedProduct.sizes) ? selectedProduct.sizes : ['S', 'M', 'L']))
+                    ).map((sz: string) => (
                       <button
                         key={sz}
                         onClick={() => setSelectedSize(sz)}

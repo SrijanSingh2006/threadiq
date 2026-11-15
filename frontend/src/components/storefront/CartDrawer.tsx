@@ -105,13 +105,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   className="p-3 rounded-xl border border-slate-200 flex gap-3 items-center hover:border-slate-300 transition-colors bg-white"
                 >
                   <img
-                    src={item.product.hero_image}
+                    src={item.product.hero_image || item.product.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
                     alt={item.product.name}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
+                    }}
                     className="w-16 h-20 object-cover rounded-lg shrink-0 border border-slate-100"
                   />
                   <div className="flex-1 min-w-0">
                     <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                      {item.product.brand?.name || 'ThreadIQ Brand'}
+                      {item.product.brand?.name || (typeof item.product.brand === 'string' ? item.product.brand : 'ThreadIQ Brand')}
                     </span>
                     <h4 className="text-xs font-semibold text-slate-800 truncate">{item.product.name}</h4>
                     <div className="flex items-center gap-2 mt-1">

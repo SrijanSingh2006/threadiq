@@ -56,14 +56,21 @@ export const CompareDrawer: React.FC<CompareDrawerProps> = ({ isOpen, onClose })
 
             {/* Product Columns */}
             {compareList.map((prod) => {
-              const sizes = JSON.parse(prod.available_sizes_json || '[]');
+              const sizes = typeof prod.available_sizes_json === 'string'
+                ? JSON.parse(prod.available_sizes_json || '[]')
+                : (Array.isArray(prod.sizes) ? prod.sizes : ['S', 'M', 'L']);
               return (
                 <div key={prod.id} className="p-3 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col">
                   {/* Hero & Title */}
                   <div className="relative mb-2">
                     <img
-                      src={prod.hero_image}
+                      src={prod.hero_image || prod.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
                       alt={prod.name}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
+                      }}
                       className="w-full h-36 object-cover rounded-lg border border-slate-200"
                     />
                     <button

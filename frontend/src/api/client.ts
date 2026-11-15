@@ -147,6 +147,36 @@ Based on synthesized behavioral data across **62,450 sessions**, **100 catalog S
       const prod = MOCK_PRODUCTS.find(p => p.id === id) || MOCK_PRODUCTS[0];
       return prod as unknown as T;
     }
+
+    // Support query parameter filtering (category_id, brand_id, search, sort_by)
+    if (cleanEndpoint.includes('?')) {
+      const queryString = cleanEndpoint.split('?')[1];
+      const params = new URLSearchParams(queryString);
+      const catId = params.get('category_id');
+      const brandId = params.get('brand_id');
+      const search = params.get('search')?.toLowerCase();
+      const sortBy = params.get('sort_by');
+
+      let filtered = [...MOCK_PRODUCTS];
+      if (catId) {
+        filtered = filtered.filter(p => p.category_id === parseInt(catId));
+      }
+      if (brandId) {
+        filtered = filtered.filter(p => p.brand_id === parseInt(brandId));
+      }
+      if (search) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || p.brand?.name?.toLowerCase().includes(search));
+      }
+      if (sortBy === 'price_asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'price_desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+      return (filtered.length > 0 ? filtered : MOCK_PRODUCTS) as unknown as T;
+    }
+
     return MOCK_PRODUCTS as unknown as T;
   }
 
