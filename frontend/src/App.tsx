@@ -58,10 +58,14 @@ export function App() {
                 <Route path="/market-intelligence" element={<MarketIntelligence />} />
                 <Route path="/storefront" element={<Storefront />} />
                 <Route path="/product-analytics" element={<ProductAnalytics />} />
+                <Route path="/analytics" element={<ProductAnalytics />} />
                 <Route path="/experimentation" element={<ExperimentationLab />} />
+                <Route path="/experiments" element={<ExperimentationLab />} />
                 <Route path="/roadmap" element={<ProductRoadmap />} />
                 <Route path="/sprint-workspace" element={<SprintWorkspace />} />
+                <Route path="/sprint" element={<SprintWorkspace />} />
                 <Route path="/operations-intelligence" element={<OperationsIntelligence />} />
+                <Route path="/operations" element={<OperationsIntelligence />} />
                 <Route path="/stakeholder-feedback" element={<StakeholderFeedback />} />
                 <Route path="/sop-management" element={<SOPManagement />} />
                 <Route path="/release-management" element={<ReleaseManagement />} />
