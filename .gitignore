@@ -51,6 +51,7 @@ frontend/dist-ssr/
 .idea/
 *.swp
 *.swo
+.vercel/
 
 # OS
 .DS_Store

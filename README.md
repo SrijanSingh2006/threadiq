@@ -1,6 +1,9 @@
 # ThreadIQ: AI-Powered Commerce Product Discovery, Validation & Operations Intelligence Platform
 
-[![CI Pipeline](https://github.com/threadiq/threadiq/actions/workflows/ci.yml/badge.svg)](https://github.com/threadiq/threadiq/actions)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://frontend-chi-two-80.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-SrijanSingh2006%2Fthreadiq-181717?logo=github&style=for-the-badge)](https://github.com/SrijanSingh2006/threadiq)
+
+[![CI Pipeline](https://github.com/SrijanSingh2006/threadiq/actions/workflows/ci.yml/badge.svg)](https://github.com/SrijanSingh2006/threadiq/actions)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org)
@@ -9,6 +12,12 @@
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Pro-4285F4?logo=google)](https://deepmind.google/technologies/gemini/)
 [![Pytest](https://img.shields.io/badge/Pytest-11_Passed-brightgreen?logo=pytest)](https://pytest.org)
 [![Vitest](https://img.shields.io/badge/Vitest-4_Passed-brightgreen?logo=vitest)](https://vitest.dev)
+
+---
+
+> 🚀 **Live Production Application**: [https://frontend-chi-two-80.vercel.app](https://frontend-chi-two-80.vercel.app)  
+> 📦 **Official GitHub Repository**: [https://github.com/SrijanSingh2006/threadiq](https://github.com/SrijanSingh2006/threadiq)  
+> 📑 **Interactive Swagger API Documentation**: `http://localhost:8000/docs` (when running backend)
 
 ---
 

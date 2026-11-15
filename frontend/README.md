@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# ThreadIQ Frontend — Commerce Intelligence Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live_Demo-black?logo=vercel&style=for-the-badge)](https://frontend-chi-two-80.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-SrijanSingh2006%2Fthreadiq-181717?logo=github&style=for-the-badge)](https://github.com/SrijanSingh2006/threadiq)
 
-Currently, two official plugins are available:
+Production-grade React 19 + TypeScript single-page application powering the **ThreadIQ** Product Discovery, Validation & Operations Platform.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Live Demo
+- **URL**: [https://frontend-chi-two-80.vercel.app](https://frontend-chi-two-80.vercel.app)
+- **Framework**: React 19 + TypeScript + Vite 8 + Tailwind CSS 4 + Recharts + Zustand
 
-## React Compiler
+## 📦 Features
+- **17 Interactive Pages**: Overview, Customer Research, Discovery, Market Intel, Fashion Storefront, Product Analytics, Experimentation Lab, Roadmap, Operations, Feedback, SOPs, Releases, Sprints, Launch Readiness, AI Copilot, Reports, and Settings.
+- **Storefront & Telemetry**: Dynamic 100-item fashion catalog, size selector, cart drawer with simulated checkout, spec comparison drawer, and first-party event tracking.
+- **Analytics & BI**: 6-stage funnel conversion diagnostics, root-cause friction breakdown, 8-week retention cohort heatmap, RFM segmentation, and A/B statistical calculator.
+- **Scrum Kanban & Ops**: 4-column sprint board, RICE prioritization, RACI matrix, launch readiness gatekeeper, and SOP document management.
+- **Resilient Fallback Architecture**: Seamlessly connects to FastAPI backend on `/api` when active, or automatically activates comprehensive client-side demo fallback with zero downtime when browsing static deployments.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Development & Build
+```bash
+# Install dependencies
+npm install
 
-## Expanding the Oxlint configuration
+# Start Vite local development server
+npm run dev
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+# Run Vitest test suite
+npm test
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+# Production build
+npm run build
 ```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.

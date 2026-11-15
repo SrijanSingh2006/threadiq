@@ -1,3 +1,5 @@
+import { MOCK_DATA, MOCK_PRODUCTS } from './mockData';
+
 const API_BASE = '/api';
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -7,12 +9,20 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     ...(options.headers || {})
   };
 
-  const response = await fetch(url, {
-    ...options,
-    headers
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers
+    });
 
-  if (!response.ok) {
+    if (response.ok) {
+      return await response.json();
+    }
+    // If response is not ok (e.g. 404 on static deployment), try mock fallback
+    const fallback = getMockFallback<T>(endpoint, options);
+    if (fallback !== undefined) {
+      return fallback;
+    }
     const errorText = await response.text();
     let errorDetail = response.statusText;
     try {
@@ -20,9 +30,151 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       errorDetail = parsed.detail || errorDetail;
     } catch {}
     throw new Error(errorDetail || `Request failed with status ${response.status}`);
+  } catch (err: any) {
+    // Network error / offline / static host fallback
+    const fallback = getMockFallback<T>(endpoint, options);
+    if (fallback !== undefined) {
+      return fallback;
+    }
+    throw err;
+  }
+}
+
+function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefined {
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  // Direct match in MOCK_DATA
+  if (MOCK_DATA[cleanEndpoint]) {
+    return MOCK_DATA[cleanEndpoint] as T;
   }
 
-  return response.json();
+  // Base path match (ignore query params)
+  const basePath = cleanEndpoint.split('?')[0];
+  if (MOCK_DATA[basePath]) {
+    return MOCK_DATA[basePath] as T;
+  }
+
+  // Products list
+  if (cleanEndpoint.startsWith('/storefront/products')) {
+    if (cleanEndpoint.includes('/recommendations')) {
+      return MOCK_PRODUCTS.slice(0, 4) as unknown as T;
+    }
+    const matchId = cleanEndpoint.match(/\/storefront\/products\/(\d+)/);
+    if (matchId) {
+      const id = parseInt(matchId[1]);
+      const prod = MOCK_PRODUCTS.find(p => p.id === id) || MOCK_PRODUCTS[0];
+      return prod as unknown as T;
+    }
+    return MOCK_PRODUCTS as unknown as T;
+  }
+
+  // Categories & Brands
+  if (cleanEndpoint.startsWith('/storefront/categories')) {
+    return [
+      { id: 1, name: 'Ethnic Wear', slug: 'ethnic-wear', product_count: 14 },
+      { id: 2, name: 'Western Wear', slug: 'western-wear', product_count: 16 },
+      { id: 3, name: 'Casual Shirts & Tops', slug: 'shirts-tops', product_count: 12 },
+      { id: 4, name: 'Denim & Trousers', slug: 'denim-trousers', product_count: 10 },
+      { id: 5, name: 'Dresses & Jumpsuits', slug: 'dresses-jumpsuits', product_count: 11 },
+      { id: 6, name: 'Athleisure & Activewear', slug: 'athleisure', product_count: 9 },
+      { id: 7, name: 'Footwear & Sneakers', slug: 'footwear', product_count: 10 },
+      { id: 8, name: 'Winterwear & Jackets', slug: 'winterwear', product_count: 8 },
+      { id: 9, name: 'Fashion Accessories', slug: 'accessories', product_count: 6 },
+      { id: 10, name: 'Loungewear & Sleepwear', slug: 'loungewear', product_count: 4 }
+    ] as unknown as T;
+  }
+
+  if (cleanEndpoint.startsWith('/storefront/brands')) {
+    return [
+      { id: 1, name: 'Roadster', tier: 'Fast Fashion' },
+      { id: 2, name: 'HRX by Hrithik Roshan', tier: 'Athleisure' },
+      { id: 3, name: 'Anouk', tier: 'Ethnic' },
+      { id: 4, name: 'Tokyo Talkies', tier: 'Fast Fashion' },
+      { id: 5, name: 'Mango', tier: 'Premium' },
+      { id: 6, name: 'Mast & Harbour', tier: 'Mid-Range' },
+      { id: 7, name: 'W for Woman', tier: 'Ethnic' },
+      { id: 8, name: 'Dressberry', tier: 'Fast Fashion' },
+      { id: 9, name: 'Taavi', tier: 'D2C' },
+      { id: 10, name: 'Highlander', tier: 'Mid-Range' }
+    ] as unknown as T;
+  }
+
+  // Checkout simulation
+  if (cleanEndpoint.startsWith('/storefront/checkout')) {
+    return {
+      order_number: `ORD-2025-${Math.floor(100000 + Math.random() * 900000)}`,
+      status: 'CONFIRMED',
+      total_amount: 2410,
+      delivery_estimate: '3-5 Business Days',
+      message: 'Order simulated successfully. First-party purchase event tracked in database.'
+    } as unknown as T;
+  }
+
+  // AI Copilot simulation
+  if (cleanEndpoint.startsWith('/copilot/generate')) {
+    let body: any = {};
+    try {
+      body = JSON.parse(options.body as string || '{}');
+    } catch {}
+
+    const promptText = body.prompt || '';
+    const workflow = body.workflow_type || 'Custom PM Prompt';
+
+    return {
+      insight: `### ThreadIQ Intelligence Output: ${workflow}
+
+#### 1. Strategic Context & Data Grounding
+Based on synthesized behavioral data across **62,450 sessions**, **100 catalog SKUs**, and **20,000 first-party product events**:
+- **Primary Funnel Drop-off**: Size & Fit Selection accounts for **50.0%** of customer drop-offs on Western Wear and Ethnic categories.
+- **Root Cause Friction**: 38.4% of sizing drop-offs stem from non-standard size charts across third-party brands, and 58.2% of post-purchase returns cite size mismatch.
+- **Active Experimentation**: EXP-SIZE-FIT-01 demonstrates a **+18.0% conversion lift** ($p < 0.001$, 99% confidence interval $[1.12\\%, 3.20\\%]$).
+
+#### 2. Key Actionable Recommendations
+1. **Accelerate Universal Size Advisor Rollout**: Ramp up feature flag \`ff_size_recommender_v2\` from 50% to 100% across mobile web traffic.
+2. **Implement UGC Daylight Customer Photos**: Replace flat studio color swatches with verified customer daylight photographs to reduce color-related returns by an estimated **3.2%**.
+3. **Execute Automated Supplier Restock SOP**: Trigger 48-hour supplier alerts for high-velocity M and L size variants currently below safety stock threshold (< 5 units).
+
+#### 3. Cross-Functional RACI & Delivery
+- **Product & Design**: Finalize Figma WCAG-AA token specifications for size selector chips.
+- **Engineering**: Land 1-click UPI intent checkout in Sprint 2 to capture ₹380,000 in monthly recovered GMV.
+- **Operations**: Sign revised 3PL courier SLA guaranteeing 24-hour express return-to-exchange pickups.`,
+      model: 'ThreadIQ Domain Knowledge Engine (Fallback Mode)',
+      grounding_records_queried: 142
+    } as unknown as T;
+  }
+
+  // Reports catalog
+  if (cleanEndpoint.startsWith('/reports/catalog')) {
+    return [
+      { id: 'funnel_report', name: '6-Stage Funnel Conversion Report', format: 'CSV & XLSX', description: 'Session to purchase conversion rates and drop-offs.' },
+      { id: 'orders_report', name: 'Order & Revenue Ledger', format: 'CSV & XLSX', description: 'Comprehensive transaction history with customer segments.' },
+      { id: 'experiments_report', name: 'A/B Testing Statistical Summary', format: 'CSV & XLSX', description: 'Sample sizes, z-scores, p-values, and 95% confidence intervals.' },
+      { id: 'supply_chain_report', name: 'Supplier & 3PL Logistics Scorecard', format: 'CSV & XLSX', description: 'Fulfillment rates, lead times, and return root causes.' }
+    ] as unknown as T;
+  }
+
+  // Tableau metadata
+  if (cleanEndpoint.startsWith('/reports/tableau/meta')) {
+    return {
+      database_type: 'PostgreSQL / Tableau Prep',
+      connection_host: 'localhost:5432',
+      database_name: 'threadiq',
+      star_schema_tables: ['Fact_Product_Events', 'Fact_Orders', 'Dim_Products', 'Dim_Customers'],
+      instructions: 'Connect Tableau Desktop or Tableau Prep to PostgreSQL using the credentials specified in .env.'
+    } as unknown as T;
+  }
+
+  // Auth getMe & switchRole
+  if (cleanEndpoint.startsWith('/auth/me') || cleanEndpoint.startsWith('/auth/switch-role') || cleanEndpoint.startsWith('/auth/login')) {
+    return {
+      id: 1,
+      email: 'pm@threadiq.internal',
+      full_name: 'Aarav Sharma',
+      role: 'Product Manager'
+    } as unknown as T;
+  }
+
+  return undefined;
 }
 
 export const api = {
