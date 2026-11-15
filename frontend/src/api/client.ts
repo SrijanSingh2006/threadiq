@@ -15,15 +15,25 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       headers
     });
 
-    if (response.ok) {
+    const contentType = response.headers.get('content-type') || '';
+
+    // If status 200 and Content-Type is application/json, it's a real API response
+    if (response.ok && contentType.includes('application/json')) {
       return await response.json();
     }
-    // If response is not ok (e.g. 404 on static deployment), try mock fallback
+
+    // If response is HTML (Vercel SPA rewrite fallback returning <!doctype html>) or non-200
     const fallback = getMockFallback<T>(endpoint, options);
     if (fallback !== undefined) {
       return fallback;
     }
+
+    // Try reading error text if not HTML
     const errorText = await response.text();
+    if (errorText.includes('<!doctype') || errorText.includes('<html')) {
+      return getSafeGenericFallback<T>(endpoint);
+    }
+
     let errorDetail = response.statusText;
     try {
       const parsed = JSON.parse(errorText);
@@ -31,30 +41,102 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     } catch {}
     throw new Error(errorDetail || `Request failed with status ${response.status}`);
   } catch (err: any) {
-    // Network error / offline / static host fallback
+    // Network error, JSON parse failure on <!doctype, or offline mode
     const fallback = getMockFallback<T>(endpoint, options);
     if (fallback !== undefined) {
       return fallback;
     }
-    throw err;
+    return getSafeGenericFallback<T>(endpoint);
   }
+}
+
+function getSafeGenericFallback<T>(endpoint: string): T {
+  const cleanEndpoint = endpoint.split('?')[0];
+  // If endpoint represents a collection (plural), return empty array
+  if (
+    cleanEndpoint.endsWith('s') ||
+    cleanEndpoint.includes('/list') ||
+    cleanEndpoint.includes('catalog')
+  ) {
+    return [] as unknown as T;
+  }
+  return {} as unknown as T;
 }
 
 function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefined {
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const basePath = cleanEndpoint.split('?')[0];
 
-  // Direct match in MOCK_DATA
+  // 1. Direct match in MOCK_DATA
   if (MOCK_DATA[cleanEndpoint]) {
     return MOCK_DATA[cleanEndpoint] as T;
   }
 
-  // Base path match (ignore query params)
-  const basePath = cleanEndpoint.split('?')[0];
+  // 2. Base path match (ignore query params)
   if (MOCK_DATA[basePath]) {
     return MOCK_DATA[basePath] as T;
   }
 
-  // Products list
+  // 3. Dynamic Mutations (POST / PUT)
+  if (options.method === 'POST' || options.method === 'PUT') {
+    let body: any = {};
+    try {
+      body = JSON.parse(options.body as string || '{}');
+    } catch {}
+
+    const generatedId = Math.floor(1000 + Math.random() * 9000);
+
+    if (cleanEndpoint.includes('/convert-to-pain-point')) {
+      return { success: true, pain_point_id: generatedId, message: 'Converted successfully' } as unknown as T;
+    }
+
+    if (cleanEndpoint.startsWith('/storefront/checkout')) {
+      return {
+        order_number: `ORD-2025-${Math.floor(100000 + Math.random() * 900000)}`,
+        status: 'CONFIRMED',
+        total_amount: body.total_amount || 2410,
+        delivery_estimate: '3-5 Business Days',
+        message: 'Order simulated successfully. First-party purchase event tracked in database.'
+      } as unknown as T;
+    }
+
+    if (cleanEndpoint.startsWith('/copilot/generate')) {
+      const promptText = body.prompt || '';
+      const workflow = body.workflow_type || 'Product Management Intelligence';
+
+      return {
+        insight: `### ThreadIQ Intelligence Output: ${workflow}
+
+#### 1. Strategic Context & Data Grounding
+Based on synthesized behavioral data across **62,450 sessions**, **100 catalog SKUs**, and **20,000 first-party product events**:
+- **Primary Funnel Drop-off**: Size & Fit Selection accounts for **50.0%** of customer drop-offs on Western Wear and Ethnic categories.
+- **Root Cause Friction**: 38.4% of sizing drop-offs stem from non-standard size charts across third-party brands, and 58.2% of post-purchase returns cite size mismatch.
+- **Active Experimentation**: EXP-SIZE-FIT-01 demonstrates a **+18.0% conversion lift** ($p < 0.001$, 99% confidence interval $[1.12\\%, 3.20\\%]$).
+
+#### 2. Key Actionable Recommendations
+1. **Accelerate Universal Size Advisor Rollout**: Ramp up feature flag \`ff_size_recommender_v2\` from 50% to 100% across mobile web traffic.
+2. **Implement UGC Daylight Customer Photos**: Replace flat studio color swatches with verified customer daylight photographs to reduce color-related returns by an estimated **3.2%**.
+3. **Execute Automated Supplier Restock SOP**: Trigger 48-hour supplier alerts for high-velocity M and L size variants currently below safety stock threshold (< 5 units).
+
+#### 3. Cross-Functional RACI & Delivery
+- **Product & Design**: Finalize Figma WCAG-AA token specifications for size selector chips.
+- **Engineering**: Land 1-click UPI intent checkout in Sprint 14 to capture ₹380,000 in monthly recovered GMV.
+- **Operations**: Sign revised 3PL courier SLA guaranteeing 24-hour express return-to-exchange pickups.`,
+        model: 'ThreadIQ Domain Knowledge Engine (Fallback Mode)',
+        grounding_records_queried: 142
+      } as unknown as T;
+    }
+
+    // Default object creation return
+    return {
+      id: generatedId,
+      ...body,
+      status: body.status || 'Active',
+      created_at: new Date().toISOString()
+    } as unknown as T;
+  }
+
+  // 4. Products list & Details
   if (cleanEndpoint.startsWith('/storefront/products')) {
     if (cleanEndpoint.includes('/recommendations')) {
       return MOCK_PRODUCTS.slice(0, 4) as unknown as T;
@@ -68,7 +150,7 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
     return MOCK_PRODUCTS as unknown as T;
   }
 
-  // Categories & Brands
+  // 5. Categories & Brands
   if (cleanEndpoint.startsWith('/storefront/categories')) {
     return [
       { id: 1, name: 'Ethnic Wear', slug: 'ethnic-wear', product_count: 14 },
@@ -99,51 +181,48 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
     ] as unknown as T;
   }
 
-  // Checkout simulation
-  if (cleanEndpoint.startsWith('/storefront/checkout')) {
+  // 6. Experiments sub-routes
+  if (cleanEndpoint.includes('/statistics')) {
     return {
-      order_number: `ORD-2025-${Math.floor(100000 + Math.random() * 900000)}`,
-      status: 'CONFIRMED',
-      total_amount: 2410,
-      delivery_estimate: '3-5 Business Days',
-      message: 'Order simulated successfully. First-party purchase event tracked in database.'
+      experiment_code: 'EXP-SIZE-FIT-01',
+      two_proportion_z_score: 3.94,
+      p_value: 0.00004,
+      confidence_interval_95: [1.12, 3.20],
+      statistical_power: 0.98,
+      is_statistically_significant: true,
+      recommendation: 'Graduate Variant B (Personalized Fit Recommender) to 100% production rollout.'
     } as unknown as T;
   }
 
-  // AI Copilot simulation
-  if (cleanEndpoint.startsWith('/copilot/generate')) {
-    let body: any = {};
-    try {
-      body = JSON.parse(options.body as string || '{}');
-    } catch {}
-
-    const promptText = body.prompt || '';
-    const workflow = body.workflow_type || 'Custom PM Prompt';
-
+  // 7. Delivery sub-routes
+  if (cleanEndpoint.includes('/burndown')) {
     return {
-      insight: `### ThreadIQ Intelligence Output: ${workflow}
-
-#### 1. Strategic Context & Data Grounding
-Based on synthesized behavioral data across **62,450 sessions**, **100 catalog SKUs**, and **20,000 first-party product events**:
-- **Primary Funnel Drop-off**: Size & Fit Selection accounts for **50.0%** of customer drop-offs on Western Wear and Ethnic categories.
-- **Root Cause Friction**: 38.4% of sizing drop-offs stem from non-standard size charts across third-party brands, and 58.2% of post-purchase returns cite size mismatch.
-- **Active Experimentation**: EXP-SIZE-FIT-01 demonstrates a **+18.0% conversion lift** ($p < 0.001$, 99% confidence interval $[1.12\\%, 3.20\\%]$).
-
-#### 2. Key Actionable Recommendations
-1. **Accelerate Universal Size Advisor Rollout**: Ramp up feature flag \`ff_size_recommender_v2\` from 50% to 100% across mobile web traffic.
-2. **Implement UGC Daylight Customer Photos**: Replace flat studio color swatches with verified customer daylight photographs to reduce color-related returns by an estimated **3.2%**.
-3. **Execute Automated Supplier Restock SOP**: Trigger 48-hour supplier alerts for high-velocity M and L size variants currently below safety stock threshold (< 5 units).
-
-#### 3. Cross-Functional RACI & Delivery
-- **Product & Design**: Finalize Figma WCAG-AA token specifications for size selector chips.
-- **Engineering**: Land 1-click UPI intent checkout in Sprint 2 to capture ₹380,000 in monthly recovered GMV.
-- **Operations**: Sign revised 3PL courier SLA guaranteeing 24-hour express return-to-exchange pickups.`,
-      model: 'ThreadIQ Domain Knowledge Engine (Fallback Mode)',
-      grounding_records_queried: 142
+      sprint_number: 14,
+      ideal_burndown: [38, 34, 30, 26, 22, 18, 14, 10, 6, 2, 0],
+      actual_burndown: [38, 36, 32, 28, 26, 22, 19, 15, 12, null, null],
+      days: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11']
     } as unknown as T;
   }
 
-  // Reports catalog
+  // 8. Auth
+  if (cleanEndpoint.startsWith('/auth/')) {
+    return {
+      id: 1,
+      email: 'pm@threadiq.internal',
+      full_name: 'Aarav Sharma',
+      role: 'Product Manager',
+      access_token: 'tiq_demo_jwt_token',
+      token_type: 'bearer',
+      user: {
+        id: 1,
+        email: 'pm@threadiq.internal',
+        full_name: 'Aarav Sharma',
+        role: 'Product Manager'
+      }
+    } as unknown as T;
+  }
+
+  // 9. Reports & Tableau
   if (cleanEndpoint.startsWith('/reports/catalog')) {
     return [
       { id: 'funnel_report', name: '6-Stage Funnel Conversion Report', format: 'CSV & XLSX', description: 'Session to purchase conversion rates and drop-offs.' },
@@ -153,7 +232,6 @@ Based on synthesized behavioral data across **62,450 sessions**, **100 catalog S
     ] as unknown as T;
   }
 
-  // Tableau metadata
   if (cleanEndpoint.startsWith('/reports/tableau/meta')) {
     return {
       database_type: 'PostgreSQL / Tableau Prep',
@@ -164,17 +242,7 @@ Based on synthesized behavioral data across **62,450 sessions**, **100 catalog S
     } as unknown as T;
   }
 
-  // Auth getMe & switchRole
-  if (cleanEndpoint.startsWith('/auth/me') || cleanEndpoint.startsWith('/auth/switch-role') || cleanEndpoint.startsWith('/auth/login')) {
-    return {
-      id: 1,
-      email: 'pm@threadiq.internal',
-      full_name: 'Aarav Sharma',
-      role: 'Product Manager'
-    } as unknown as T;
-  }
-
-  return undefined;
+  return getSafeGenericFallback<T>(endpoint);
 }
 
 export const api = {

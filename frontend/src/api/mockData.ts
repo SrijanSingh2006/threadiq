@@ -1,5 +1,6 @@
-// Comprehensive mock data fallback for live web deployment
+// Comprehensive mock data fallback for live web deployment & offline fallback
 export const MOCK_DATA: Record<string, any> = {
+  // --- OVERVIEW ---
   '/overview/metrics': {
     kpis: {
       total_products: 100,
@@ -14,7 +15,7 @@ export const MOCK_DATA: Record<string, any> = {
     alerts: [
       { id: 1, type: 'warning', title: 'Size Guide Drop-off', message: 'Size chart view-to-add-to-cart dropped 4.2% on Western Wear PDPs.', timestamp: '10m ago' },
       { id: 2, type: 'critical', title: 'Low Stock Alert', message: '12 high-velocity SKU variants below safety stock threshold (< 5 units).', timestamp: '25m ago' },
-      { id: 3, type: 'success', title: 'A/B Test Significant', message: 'EXP-SIZE-FIT-01 reached 99.1% statistical confidence with +14.2% lift.', timestamp: '1h ago' }
+      { id: 3, type: 'success', title: 'A/B Test Significant', message: 'EXP-SIZE-FIT-01 reached 99.1% statistical confidence with +18.0% lift.', timestamp: '1h ago' }
     ],
     recent_activity: [
       { id: 1, user: 'Aarav Sharma', role: 'Product Manager', action: 'Approved PRD', target: 'Size & Fit Recommender v2.1', time: '15m ago' },
@@ -23,7 +24,8 @@ export const MOCK_DATA: Record<string, any> = {
     ]
   },
 
-  '/analytics/funnel?device=all': {
+  // --- ANALYTICS ---
+  '/analytics/funnel': {
     total_sessions: 62450,
     stages: [
       { stage_number: 1, stage_name: 'Storefront Session', event_name: 'view_home', visitor_count: 62450, stage_conversion_rate: 100.0, cumulative_conversion_rate: 100.0, drop_off_count: 0, drop_off_rate: 0.0 },
@@ -71,90 +73,345 @@ export const MOCK_DATA: Record<string, any> = {
     ]
   },
 
+  '/analytics/feature-kpis': [
+    { feature_name: 'Smart Size Recommender v2', metric: 'Size Guide to Bag Conversion', baseline: '11.8%', current: '14.2%', lift: '+20.3%', status: 'Statistically Significant' },
+    { feature_name: 'UGC Daylight Customer Photos', metric: 'Color Discrepancy Returns', baseline: '19.4%', current: '14.1%', lift: '-27.3%', status: 'Statistically Significant' },
+    { feature_name: 'Sticky PLP Available Size Chips', metric: 'PLP to PDP Click Rate', baseline: '44.5%', current: '51.8%', lift: '+16.4%', status: 'Ramping Up' },
+    { feature_name: '1-Click Instant UPI Intent', metric: 'Payment Step Completion', baseline: '66.0%', current: '71.2%', lift: '+7.8%', status: 'Active Experiment' }
+  ],
+
+  '/analytics/metrics': [
+    { metric: 'Gross Merchandise Value (GMV)', value: '₹4,821,950', period: 'Last 30 Days', trend: '+14.2%' },
+    { metric: 'Average Order Value (AOV)', value: '₹2,410.98', period: 'Last 30 Days', trend: '+3.8%' },
+    { metric: 'Overall Storefront Conversion', value: '3.24%', period: 'Last 30 Days', trend: '+0.42%' },
+    { metric: 'Apparel Return Rate', value: '14.8%', period: 'Last 30 Days', trend: '-2.1%' }
+  ],
+
+  // --- CUSTOMER RESEARCH & DISCOVERY ---
+  '/research/projects': [
+    {
+      id: 1,
+      name: 'Fashion Discovery & Sizing Anxiety Study',
+      objective: 'Uncover psychological friction points during size selection across ethnic and western apparel.',
+      research_type: 'Customer interviews',
+      business_area: 'Storefront Discovery',
+      target_customer_segment: 'Gen Z & Tier-1 Working Professionals',
+      owner: 'Kabir Sen (UX Researcher)',
+      start_date: '2025-01-10',
+      end_date: '2025-02-15',
+      status: 'Completed',
+      research_questions: '1. How do users decide on a size when buying from unfamiliar brands? 2. What triggers double ordering?',
+      success_criteria: 'Identify top 3 actionable sizing UI interventions to decrease return volume.'
+    },
+    {
+      id: 2,
+      name: 'Checkout Drop-off & Payment Friction Lab',
+      objective: 'Analyze friction during payment mode selection and evaluate single-page checkout flow.',
+      research_type: 'Usability studies',
+      business_area: 'Checkout & Payments',
+      target_customer_segment: 'Mobile Shoppers (Android & iOS)',
+      owner: 'Diya Patel (Product Analyst)',
+      start_date: '2025-02-01',
+      status: 'In Progress',
+      research_questions: '1. Does layout shift on UPI selection cause unintended payment abandonment?',
+      success_criteria: 'Reduce payment initiation bounce by 2.0%.'
+    },
+    {
+      id: 3,
+      name: 'Festive Wear UGC & Daylight Photography Benchmark',
+      objective: 'Evaluate customer perception of silk and brocade fabrics under studio vs real daylight.',
+      research_type: 'Customer surveys',
+      business_area: 'Ethnic & Festive PDP',
+      target_customer_segment: 'Occasion & Festive Shoppers',
+      owner: 'Ananya Iyer (Product Designer)',
+      start_date: '2025-02-18',
+      status: 'In Progress',
+      research_questions: 'Do daylight user reviews reduce color/texture return rates?',
+      success_criteria: 'Achieve >80% customer confidence in fabric color fidelity.'
+    }
+  ],
+
   '/research/personas': [
     {
       id: 1,
       persona_code: 'GEN-Z',
       name: 'Riya - The Gen-Z Trend Hunter',
-      age_range: '18-24',
+      tagline: 'College student seeking viral TikTok & Instagram aesthetics on a student budget',
+      age_range: '18 - 24',
       occupation: 'College Student / Intern',
-      income_bracket: 'Tier 1 Metro (Allowance / ₹25k)',
-      archetype: 'Trend-First Fast Fashion',
-      primary_goals: 'Discover viral Instagram/Pinterest styles under ₹1,500 with zero wait time.',
-      pain_points: 'Inconsistent sizing across trendy brands; return pickups take 4+ days.',
+      customer_segment: 'Gen Z Trendsetter',
+      shopping_frequency: '2-3 times per week',
       preferred_categories: 'Western Wear, Crop Tops, Oversized Hoodies, Chunky Sneakers',
-      device_preference: 'Mobile App (iOS/Android)',
-      price_sensitivity: 'High',
-      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+      shopping_motivation: 'Desire to stay ahead of viral street trends and styling aesthetics seen on Reels.',
+      spending_preference: 'Trend-focused / Value sensitive',
+      purchase_behaviour: 'Impulse browsing on mobile, adds 8+ items to wishlist, sensitive to delivery ETA.',
+      common_frustrations: 'Inconsistent sizing across trendy brands; return pickups take 4+ days.',
+      preferred_discovery_methods: 'Visual Search, Curated Trend Feeds, Hashtag Filters',
+      return_behaviour: 'Returns 25% of orders primarily due to bodycon fit or hemline length.',
+      customer_goals: 'Curate trendy outfits without breaking the bank; fast 2-day deliveries.'
     },
     {
       id: 2,
       persona_code: 'CORP-PRO',
-      name: 'Arjun - The Urban Professional',
-      age_range: '28-36',
+      name: 'Sneha - The Urban Professional',
+      tagline: 'Mid-career corporate professional balancing comfort and elegance',
+      age_range: '28 - 36',
       occupation: 'Tech Lead / Consultant',
-      income_bracket: '₹18L - ₹35L / annum',
-      archetype: 'Quality & Convenience First',
-      primary_goals: 'Build a durable smart-casual wardrobe without spending hours scrolling.',
-      pain_points: 'Linen and shirt sizing differs drastically between formal and casual fits.',
-      preferred_categories: 'Casual Shirts, Slim Chinos, Linen Blazers, Minimal Loafers',
-      device_preference: 'Mobile Web & Desktop',
-      price_sensitivity: 'Low',
-      avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
+      customer_segment: 'Premium Wardrobe',
+      shopping_frequency: 'Twice a month',
+      preferred_categories: 'Ethnic Fusion, Formal Shirts, Linen Blazers, Chinos',
+      shopping_motivation: 'Needs durable, breathable, wrinkle-resistant outfits suitable for hybrid office schedules.',
+      spending_preference: 'Premium / Quality-first',
+      purchase_behaviour: 'Researches fabric composition, checks detailed size charts, high repeat purchase rate.',
+      common_frustrations: 'Linen and shirt sizing differs drastically between formal and casual fits.',
+      preferred_discovery_methods: 'Brand Pages, Category Navigation, Material Filters',
+      return_behaviour: 'Low return rate (8%), primarily exchanges for alternative colors.',
+      customer_goals: 'Build a versatile capsule wardrobe with reliable longevity.'
     },
     {
       id: 3,
-      persona_code: 'OCCASION',
-      name: 'Pooja - The Festive & Ethnic Connoisseur',
-      age_range: '26-42',
-      occupation: 'Marketing Director & Homemaker',
-      income_bracket: '₹12L - ₹25L / annum',
-      archetype: 'Authenticity & Craft Enthusiast',
-      primary_goals: 'Find authentic handcrafted kurtas, lehengas, and artisanal jewelry for weddings.',
-      pain_points: 'Fabric drape and real color vibrancy look totally different in customer photos vs studio lights.',
-      preferred_categories: 'Ethnic Wear, Anarkalis, Pure Cotton Sarees, Statement Jewelry',
-      device_preference: 'Mobile App (Android)',
-      price_sensitivity: 'Medium',
-      avatar_url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80'
+      persona_code: 'BUDGET',
+      name: 'Rohan - The Budget-Conscious Optimizer',
+      tagline: 'College student looking for high-utility everyday staples',
+      age_range: '19 - 23',
+      occupation: 'Engineering Undergrad',
+      customer_segment: 'Value Seeker',
+      shopping_frequency: 'During mega sales and payday weekends',
+      preferred_categories: 'Casual Shirts, Denim, Athleisure, Sneakers',
+      shopping_motivation: 'Maximizing discounts, coupon stacking, and durable daily campus wear.',
+      spending_preference: 'Budget / Deal-driven',
+      purchase_behaviour: 'Sorts by Price: Low to High, filters strictly for >40% discounts.',
+      common_frustrations: 'Out-of-stock sizes during sale peaks, deceptive discount percentages.',
+      preferred_discovery_methods: 'Discount Carousels, Deal of the Day, Flash Sale Banners',
+      return_behaviour: 'Moderate (14%), hesitant to return if return pickup fee applies.',
+      customer_goals: 'Get maximum branded apparel within a ₹3,000 monthly allowance.'
     },
     {
       id: 4,
-      persona_code: 'VALUE-FAM',
-      name: 'Sunita - The Value Family Shopper',
-      age_range: '35-50',
-      occupation: 'School Educator',
-      income_bracket: '₹8L - ₹15L / annum',
-      archetype: 'Budget Optimizer & Multi-Cart',
-      primary_goals: 'Maximize festive discounts, bundle kidswear and family casuals in single shipments.',
-      pain_points: 'High delivery fees on split shipments; complex coupon discount conditions.',
-      preferred_categories: 'Loungewear, Kids Casuals, Everyday Kurtas, Cotton Trousers',
-      device_preference: 'Desktop & Mobile App',
-      price_sensitivity: 'High',
-      avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80'
+      persona_code: 'OCCASION',
+      name: 'Anjali - The Festive & Ethnic Connoisseur',
+      tagline: 'Family occasion planner seeking artisanal ethnic silhouettes',
+      age_range: '32 - 45',
+      occupation: 'Marketing Director & Homemaker',
+      customer_segment: 'Festive Shopper',
+      shopping_frequency: 'Seasonal (Diwali, Weddings, Festivals)',
+      preferred_categories: 'Ethnic Wear, Sarees, Lehengas, Handlooms',
+      shopping_motivation: 'Unique handcrafted designs that stand out at cultural and family events.',
+      spending_preference: 'High AOV / Premium festive',
+      purchase_behaviour: 'Compares intricate embroidery details, zooms in on high-res photos.',
+      common_frustrations: 'Color shade difference from studio photos, rigid non-stretch waistbands.',
+      preferred_discovery_methods: 'Curated Festivals, Editorial Lookbooks, Artisan Spotlights',
+      return_behaviour: 'High stakes returns if garment arrives too late for occasion.',
+      customer_goals: 'Guaranteed authentic fabrics delivered strictly ahead of scheduled festivities.'
     },
     {
       id: 5,
       persona_code: 'ACTIVE',
-      name: 'Kabir - The Athleisure Enthusiast',
-      age_range: '22-32',
+      name: 'Varun - The Athleisure Enthusiast',
+      tagline: 'Fitness enthusiast seeking high-performance gym and running apparel',
+      age_range: '24 - 32',
       occupation: 'Product Specialist & Marathoner',
-      income_bracket: '₹10L - ₹20L / annum',
-      archetype: 'Performance & Fit Driven',
-      primary_goals: 'Performance gym wear, sweat-wicking tees, and trail-running sneakers.',
-      pain_points: 'Compression tights roll down; lack of stretch elasticity specs.',
-      preferred_categories: 'Athleisure, Compression Tights, Dry-Fit Tees, Training Shorts',
-      device_preference: 'Mobile App',
-      price_sensitivity: 'Medium',
-      avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80'
+      customer_segment: 'Activewear',
+      shopping_frequency: 'Monthly',
+      preferred_categories: 'Athleisure, Dry-Fit Tees, Footwear',
+      shopping_motivation: 'Functional sweat-wicking gear with modern aesthetic appeal.',
+      spending_preference: 'Mid to Premium',
+      purchase_behaviour: 'Reviews customer photos for stretch and sweat resistance.',
+      common_frustrations: 'Chafing stitching, misleading shoe sole cushioning claims.',
+      preferred_discovery_methods: 'Keyword Search, Performance Filter Tags',
+      return_behaviour: 'Returns shoes if arch support or width feels narrow.',
+      customer_goals: 'Gear that survives rigorous daily workouts while looking sharp.'
     }
   ],
 
   '/research/pain-points': [
-    { id: 1, title: 'Size Chart Inconsistency Across Partner Brands', stage: 'Size & Fit Selection', severity: 'Critical', frequency: 342, impact: 'High', status: 'In Validation', proposed_solution: 'AI Body-Measurement Predictor & Universal Fit Score' },
-    { id: 2, title: 'Color Discrepancy Between Studio Photos and Real Daylight', stage: 'Product Detail (PDP)', severity: 'High', frequency: 219, impact: 'High', status: 'Validated', proposed_solution: 'UGC Daylight Customer Photo Carousel' },
-    { id: 3, title: 'Stockout on High-Demand Sizes (M/L) in Fast-Moving Western Wear', stage: 'Size & Fit Selection', severity: 'High', frequency: 188, impact: 'High', status: 'In Validation', proposed_solution: 'Automated 48-Hour Supplier Restock Triggers' },
-    { id: 4, title: 'Surprise Delivery Surcharges at Final Payment Step', stage: 'Order Placed (Purchase)', severity: 'High', frequency: 164, impact: 'Medium', status: 'Backlog', proposed_solution: 'Upfront Transparent Shipping Threshold Banner' },
-    { id: 5, title: 'Return Pickup Slowness in Tier 2/Tier 3 Pin Codes', stage: 'Post-Purchase & Returns', severity: 'Medium', frequency: 142, impact: 'Medium', status: 'In Validation', proposed_solution: 'PUDO Partner Locker & Drop-Off Network' }
+    {
+      id: 1,
+      title: 'Inconsistent Brand Sizing Scale',
+      description: 'Shoppers report that Size M varies up to 2.5 inches in bust/chest circumference between ethnic and western brands, triggering double-ordering and anxiety.',
+      customer_segment: 'Gen Z Trendsetter & Premium Wardrobe',
+      journey_stage: 'Size Selection',
+      supporting_feedback: 'Interviews USR-INT-01, USR-INT-04; Return telemetry shows 48% sizing reasons.',
+      supporting_records_count: 184,
+      severity: 'Critical',
+      frequency: 'Daily',
+      customer_impact: 5,
+      business_impact: 5,
+      status: 'In Roadmap',
+      proposed_opportunity: 'Develop ML-powered Smart Size Recommender with fit-history prediction.'
+    },
+    {
+      id: 2,
+      title: 'Studio Lighting Color & Texture Distortion',
+      description: 'Customers receive garments where real daylight colors appear significantly duller or textures differ from studio photography.',
+      customer_segment: 'Festive Shopper',
+      journey_stage: 'Product Details',
+      supporting_feedback: 'Feedback FB-MERCH-09; 19% of returns cite fabric feel discrepancy.',
+      supporting_records_count: 92,
+      severity: 'High',
+      frequency: 'Frequent',
+      customer_impact: 4,
+      business_impact: 4,
+      status: 'Validated',
+      proposed_opportunity: 'Integrate User-Generated Content (UGC) Daylight Photo Carousel.'
+    },
+    {
+      id: 3,
+      title: 'Out-of-Stock Size Disappointment on PDP',
+      description: 'Shoppers browse catalog, fall in love with an item, click into PDP only to discover their size is sold out.',
+      customer_segment: 'Value Seeker',
+      journey_stage: 'Product Listing',
+      supporting_feedback: 'Drop-off telemetry: 14.8% immediate bounce when selected size chip is greyed out.',
+      supporting_records_count: 142,
+      severity: 'High',
+      frequency: 'Daily',
+      customer_impact: 4,
+      business_impact: 4,
+      status: 'Prioritized',
+      proposed_opportunity: 'Display sticky available size chips directly on PLP cards.'
+    },
+    {
+      id: 4,
+      title: 'Surprise Delivery Surcharges at Checkout',
+      description: 'Customers reach checkout only to discover an unexpected delivery convenience surcharge, causing friction.',
+      customer_segment: 'Value Seeker',
+      journey_stage: 'Checkout',
+      supporting_feedback: 'Cart abandonment telemetry reveals 28.4% drop-off at final payment step.',
+      supporting_records_count: 164,
+      severity: 'High',
+      frequency: 'Frequent',
+      customer_impact: 4,
+      business_impact: 3,
+      status: 'In Validation',
+      proposed_opportunity: 'Transparent cart fee disclosure and progress bar for free shipping.'
+    },
+    {
+      id: 5,
+      title: 'Return Exchange Dispatch Latency',
+      description: 'Waiting for returned parcel to reach warehouse before exchange size is dispatched creates 7-day delays.',
+      customer_segment: 'All Shoppers',
+      journey_stage: 'Returns & Exchanges',
+      supporting_feedback: '34% of support tickets enquire about replacement timelines.',
+      supporting_records_count: 118,
+      severity: 'Medium',
+      frequency: 'Weekly',
+      customer_impact: 3,
+      business_impact: 4,
+      status: 'In Roadmap',
+      proposed_opportunity: '1-Click Doorstep Instant Size Swap with delivery rider swap.'
+    }
+  ],
+
+  '/research/interviews': [
+    {
+      id: 1,
+      project_id: 1,
+      participant_id: 'USR-CUST-10492',
+      customer_segment: 'Gen Z Trendsetter',
+      interview_date: '2025-01-20',
+      objective: 'Understand sizing doubts on western dresses',
+      observations: 'Participant opened 4 different size charts in separate tabs to cross-reference bust measurements.',
+      pain_points: 'No universal size standard; model height is rarely representative of average Indian women.',
+      opportunities: 'Show crowdsourced fit ratings: True to Size (86%) with reviewer height/weight badges.',
+      evidence_reference: 'REC-AUDIO-2026-089',
+      is_synthetic: true
+    },
+    {
+      id: 2,
+      project_id: 1,
+      participant_id: 'USR-CUST-11823',
+      customer_segment: 'Premium Wardrobe',
+      interview_date: '2025-01-22',
+      objective: 'Analyze fit discrepancies in formal office wear',
+      observations: 'Purchased both 38 and 40 in shirts, returned 38 due to tight shoulder seam.',
+      pain_points: 'Slim fit vs regular fit definitions vary widely across brands.',
+      opportunities: 'Fit quiz asking about preferred shoulder drape and waist taper.',
+      evidence_reference: 'REC-AUDIO-2026-094',
+      is_synthetic: true
+    },
+    {
+      id: 3,
+      project_id: 2,
+      participant_id: 'USR-CUST-14920',
+      customer_segment: 'Mobile Shopper',
+      interview_date: '2025-02-05',
+      objective: 'Evaluate payment step abandonment',
+      observations: 'Participant experienced layout shift when selecting GPay on low-end Android device.',
+      pain_points: 'Asynchronous payment gateway modal pushed submit button off screen.',
+      opportunities: 'Direct intent-based native UPI button rendered statically.',
+      evidence_reference: 'REC-SCREEN-2026-012',
+      is_synthetic: true
+    }
+  ],
+
+  '/research/surveys': [
+    {
+      id: 1,
+      title: 'Sizing Confidence & Fit Anxiety Survey (Q1)',
+      description: 'Quantitative inquiry assessing size selection confidence across 1,200 fashion shoppers.',
+      target_segment: 'All Apparel Shoppers',
+      status: 'Active',
+      response_count: 840,
+      questions: [
+        { id: 101, question_text: 'How often do you order two sizes of the same item to guarantee fit?', question_type: 'Multiple Choice', options: ['Never', 'Rarely', 'Frequently', 'Always'] },
+        { id: 102, question_text: 'How helpful would an automated size recommendation based on your height and weight be?', question_type: 'Rating (1-5)' },
+        { id: 103, question_text: 'What is your biggest fear when ordering apparel online?', question_type: 'Text' }
+      ]
+    },
+    {
+      id: 2,
+      title: 'Doorstep Return vs Exchange Satisfaction Survey',
+      description: 'Post-return feedback survey analyzing customer sentiment on pickup turnaround times.',
+      target_segment: 'Customers with Return Requests in Last 30 Days',
+      status: 'Active',
+      response_count: 420,
+      questions: [
+        { id: 201, question_text: 'Would you prefer an instant replacement size delivered at the exact moment of pickup?', question_type: 'Yes/No' },
+        { id: 202, question_text: 'Rate your satisfaction with the courier pickup window clarity.', question_type: 'Rating (1-5)' }
+      ]
+    }
+  ],
+
+  '/research/validations': [
+    {
+      id: 1,
+      pain_point_id: 1,
+      hypothesis: 'Personalized size recommendations on PDP will reduce size-related return requests by at least 15% without reducing add-to-cart conversion.',
+      evidence: 'Analysis of 280 synthetic return requests revealed 134 instances where the same user bought multiple sizes or cited fit discrepancies.',
+      research_source: 'Customer Research Synthesis & Reverse Logistics Telemetry',
+      validation_method: 'A/B Prototype & Historical Return Correlation',
+      test_participants_count: 1200,
+      observed_behaviour: 'Users presented with recommended size badge completed checkout 18% faster and exhibited lower return rates.',
+      validation_outcome: 'Validated',
+      confidence_level: 'High',
+      follow_up_questions: 'Does confidence vary across body types? How do we handle new brands with limited order history?'
+    },
+    {
+      id: 2,
+      pain_point_id: 2,
+      hypothesis: 'User-generated daylight customer photos will reduce color and texture returns by 20%.',
+      evidence: 'Review data shows products with customer photo reviews have 32% fewer color-related queries.',
+      research_source: 'Catalog Reviews & Return Reasons Audit',
+      validation_method: 'User Testing & Prototype Review Flow',
+      test_participants_count: 350,
+      observed_behaviour: '78% of participants inspected customer photos before deciding on ethnic dresses.',
+      validation_outcome: 'Validated',
+      confidence_level: 'High',
+      follow_up_questions: 'How do we incentivize buyers to upload well-lit daylight photos?'
+    },
+    {
+      id: 3,
+      pain_point_id: 4,
+      hypothesis: 'Displaying dynamic free delivery progress bar on cart increases AOV by +8%.',
+      evidence: 'Cart telemetry shows 42% of carts sit between ₹700 and ₹999 with ₹999 free shipping threshold.',
+      research_source: 'Cart Telemetry & AOV Distribution',
+      validation_method: 'A/B Test Prototype',
+      test_participants_count: 4500,
+      observed_behaviour: 'Shoppers added accessory or socks to hit ₹1,000 threshold, increasing AOV from ₹890 to ₹1,040.',
+      validation_outcome: 'Validated',
+      confidence_level: 'High',
+      follow_up_questions: 'What low-cost add-on recommendations maximize threshold unlocks?'
+    }
   ],
 
   '/research/journey-map': [
@@ -168,6 +425,53 @@ export const MOCK_DATA: Record<string, any> = {
     { stage: '8. Returns & Exchanges', activity: 'Initiating size exchange on mobile app', emotion: 'Frustrated', friction: 'Wait 7 days for exchange item to dispatch after return', drop_off_pct: '14.8%', opportunity: 'Instant exchange dispatch before pickup completion' }
   ],
 
+  // --- MARKET & COMPETITORS ---
+  '/market/competitors': [
+    { competitor: 'Myntra (Market Leader)', market_share: '38%', strengths: 'Vast brand catalog, Studio influencers, robust logistics', weaknesses: 'App interface clutter, complex return approval friction', threat_level: 'High' },
+    { competitor: 'Ajio (Reliance Retail)', market_share: '24%', strengths: 'Aggressive pricing, exclusive international high-street brands', weaknesses: 'Delivery delays, customer support resolution latency', threat_level: 'High' },
+    { competitor: 'Nykaa Fashion', market_share: '14%', strengths: 'Curated premium fashion, loyal luxury beauty crossover audience', weaknesses: 'Higher price points, limited budget apparel selection', threat_level: 'Medium' },
+    { competitor: 'Tata CLiQ', market_share: '9%', strengths: 'Omnichannel store-to-door network, luxury authorized warranty', weaknesses: 'Slower app discovery velocity, smaller youth demographic', threat_level: 'Low' }
+  ],
+
+  '/market/research': [
+    {
+      id: 1,
+      title: 'Indian Online Fashion Market Sizing 2025-2028',
+      summary: 'Indian fashion e-commerce is projected to expand from $14B to $35B by 2028, with Gen Z contributing 42% of incremental growth.',
+      key_trends: 'Rise of fast trend discovery, body-inclusive sizing, quick return turnaround expectations.',
+      implications: 'Platforms with low return friction and accurate size recommendation will dominate customer retention.'
+    },
+    {
+      id: 2,
+      title: 'Reverse Logistics & Fit Return Economics Report',
+      summary: 'Reverse logistics costs average ₹140 per return in India. Eliminating 15% of size returns unlocks over ₹18M in bottom-line operational savings.',
+      key_trends: 'Instant doorstep exchange swaps reduce carrier turnaround from 7 days to 24 hours.',
+      implications: 'Fit accuracy directly drives gross margin expansion.'
+    }
+  ],
+
+  '/market/opportunities': [
+    {
+      id: 1,
+      title: 'AI Smart Size & Fit Predictor',
+      description: 'Universal fit algorithm trained on brand spec sheets and verified customer return patterns.',
+      opportunity_type: 'Core Retention & Margin Expansion',
+      estimated_reach: '1.2M Shoppers / Month',
+      potential_gmv_impact: '+₹4,200,000 / Month',
+      status: 'Active Prototype'
+    },
+    {
+      id: 2,
+      title: '1-Click Instant Doorstep Exchange',
+      description: 'Simultaneous delivery of replacement size and pickup of old size by carrier rider.',
+      opportunity_type: 'Operational Experience Differentiator',
+      estimated_reach: '180K Exchange Orders / Quarter',
+      potential_gmv_impact: '+₹1,800,000 Saved Logistics',
+      status: 'In Validation'
+    }
+  ],
+
+  // --- EXPERIMENTATION ---
   '/experiments': [
     {
       id: 1,
@@ -216,6 +520,18 @@ export const MOCK_DATA: Record<string, any> = {
     { id: 4, key: 'ff_transparent_shipping_banner', name: 'Transparent Free Shipping Threshold', is_enabled: true, rollout_percentage: 100, audience: 'All Users', description: 'Real-time sticky progress bar: Add ₹350 more for Free Express Delivery.' }
   ],
 
+  '/experiments/usability-tasks': [
+    { id: 1, task_name: 'Find and Select Recommended Size on Kurta PDP', success_rate: 94.2, avg_duration_sec: 18.5, error_count: 2 },
+    { id: 2, task_name: 'Add to Cart and Proceed to UPI Checkout', success_rate: 89.6, avg_duration_sec: 24.1, error_count: 5 },
+    { id: 3, task_name: 'Initiate Size Exchange from Order History', success_rate: 92.0, avg_duration_sec: 22.0, error_count: 3 }
+  ],
+
+  // --- DELIVERY / AGILE & SCRUM ---
+  '/delivery/sprints': [
+    { id: 1, sprint_number: 14, name: 'Sprint 14: Size Accuracy & Cart Conversion', status: 'Active', start_date: '2025-02-10', end_date: '2025-02-24', total_points: 38, completed_points: 26, velocity: 32 },
+    { id: 2, sprint_number: 13, name: 'Sprint 13: Storefront Performance & PDP Vitals', status: 'Completed', start_date: '2025-01-27', end_date: '2025-02-10', total_points: 34, completed_points: 34, velocity: 34 }
+  ],
+
   '/delivery/stories': [
     { id: 1, title: 'Implement AI Fit Advisor widget on PDP', epic: 'Size & Fit Intelligence', status: 'Done', story_points: 8, priority: 'P0', assignee: 'Rohan Verma', sprint_id: 1 },
     { id: 2, title: 'Add Customer Body Height/Weight filter to Reviews', epic: 'Customer Research & UGC', status: 'In Review', story_points: 5, priority: 'P1', assignee: 'Ananya Iyer', sprint_id: 1 },
@@ -231,9 +547,36 @@ export const MOCK_DATA: Record<string, any> = {
     { id: 4, title: 'UGC Daylight Style Discovery Feed', quarter: 'Q3 2025', status: 'Backlog', target_date: '2025-09-30', owner: 'Ananya Iyer', progress: 10, impact: 'High' }
   ],
 
+  '/delivery/risks': [
+    { id: 1, title: 'Third-party brand sizing feed inconsistencies', severity: 'High', likelihood: 'Medium', mitigation_strategy: 'Automated ingestion schema validator flagging non-standard measurements before product publish.', owner: 'Aarav Sharma' },
+    { id: 2, title: '3PL courier SLA breach during festive peaks', severity: 'High', likelihood: 'High', mitigation_strategy: 'Dynamic courier load-balancing routing volume across BlueDart, Delhivery, and Shadowfax.', owner: 'Vikram Rao' }
+  ],
+
+  '/delivery/raci': [
+    { id: 1, initiative: 'Size & Fit Recommender Rollout', responsible: 'Rohan Verma (Eng)', accountable: 'Aarav Sharma (PM)', consulted: 'Ananya Iyer (Design), Diya Patel (Analytics)', informed: 'Customer Support, Category Leads' },
+    { id: 2, initiative: 'Instant Doorstep Exchange Flow', responsible: 'Vikram Rao (Ops)', accountable: 'Aarav Sharma (PM)', consulted: '3PL Logistics Partners, QA Lead', informed: 'All Business Stakeholders' }
+  ],
+
+  // --- OPERATIONS & SOPS ---
+  '/operations/feedback': [
+    { id: 1, source: 'Customer Support Escalations', team: 'Customer Support', category: 'Sizing & Returns', feedback_text: 'Customers complaining that brand Roadster shirts run 1 size smaller than standard Indian formal shirts.', sentiment: 'Negative', sentiment_score: -0.68, status: 'Actioned', pain_point_id: 1, created_at: '2025-02-12' },
+    { id: 2, source: 'Merchant Operations', team: 'Merchant Ops', category: 'Catalog Integrity', feedback_text: 'Ethnic kurtas lack bust measurement specs in centimetres, causing customer confusion.', sentiment: 'Neutral', sentiment_score: -0.15, status: 'Open', created_at: '2025-02-14' },
+    { id: 3, source: 'Logistics SLA Monitoring', team: 'Logistics', category: 'Delivery Performance', feedback_text: 'Reverse pickup SLA in Bengaluru South improved to 18 hours after PUDO partner integration.', sentiment: 'Positive', sentiment_score: 0.82, status: 'Reviewed', created_at: '2025-02-15' }
+  ],
+
   '/operations/sops': [
     { id: 1, sop_code: 'SOP-FIT-001', title: 'Brand Sizing Discrepancy & Spec Calibration Protocol', category: 'Catalog Operations', version: '2.0', owner: 'Aarav Sharma', last_reviewed: '2025-02-10', content: 'Standard operating procedure for auditing partner brand size charts when return rates exceed 18%.' },
     { id: 2, sop_code: 'SOP-OPS-002', title: 'Flash Sale Fulfillment & Gateway Failover Protocol', category: 'Platform Operations', version: '1.4', owner: 'Vikram Rao', last_reviewed: '2025-01-28', content: 'Step-by-step contingency checklist for payment gateway timeouts and carrier capacity allocation during peak sale events.' }
+  ],
+
+  '/operations/releases': [
+    { id: 1, release_version: 'v2.4.0', name: 'Smart Size Advisor & UGC Daylight Reviews', release_date: '2025-02-12', release_owner: 'Aarav Sharma (PM)', status: 'Production', summary: 'Introduced ML-powered size fit recommender on PDP and customer daylight photo carousel.' },
+    { id: 2, release_version: 'v2.3.1', name: 'Checkout Payment Latency Optimization', release_date: '2025-01-24', release_owner: 'Rohan Verma (Eng)', status: 'Production', summary: 'Eliminated layout shifts during UPI payment selection; reduced payment drop-off by 3.2%.' }
+  ],
+
+  '/operations/knowledge': [
+    { id: 1, title: 'Indian Fashion Sizing Standards Guide', category: 'Catalog Guidelines', author: 'Aarav Sharma', last_updated: '2025-02-05', summary: 'Official measurement standards for ethnic wear kurtas, western dresses, and denim across Indian consumer body profiles.' },
+    { id: 2, title: 'First-Party Event Telemetry Taxonomy', category: 'Engineering Specifications', author: 'Diya Patel', last_updated: '2025-02-01', summary: 'Dictionary of all client-side telemetry events, payload parameters, and database schemas.' }
   ],
 
   '/operations/launch-readiness/summary': {
@@ -252,6 +595,7 @@ export const MOCK_DATA: Record<string, any> = {
     { id: 5, item_name: 'Carrier 3PL Pickup SLA Signed for 24-Hour Express Exchange', category: 'Operations', owner: 'Vikram Rao', status: 'Verified', is_blocker: false }
   ],
 
+  // --- SUPPLY CHAIN ---
   '/supply-chain/metrics': {
     inbound: {
       on_time_fulfillment_rate: 94.6,
@@ -274,11 +618,26 @@ export const MOCK_DATA: Record<string, any> = {
     ]
   },
 
-  '/market/competitors': [
-    { competitor: 'Myntra (Market Leader)', market_share: '38%', strengths: 'Vast brand catalog, Studio influencers, robust logistics', weaknesses: 'App interface clutter, complex return approval friction', threat_level: 'High' },
-    { competitor: 'Ajio (Reliance Retail)', market_share: '24%', strengths: 'Aggressive pricing, exclusive international high-street brands', weaknesses: 'Delivery delays, customer support resolution latency', threat_level: 'High' },
-    { competitor: 'Nykaa Fashion', market_share: '14%', strengths: 'Curated premium fashion, loyal luxury beauty crossover audience', weaknesses: 'Higher price points, limited budget apparel selection', threat_level: 'Medium' },
-    { competitor: 'Tata CLiQ', market_share: '9%', strengths: 'Omnichannel store-to-door network, luxury authorized warranty', weaknesses: 'Slower app discovery velocity, smaller youth demographic', threat_level: 'Low' }
+  '/supply-chain/inventory/low-stock': [
+    { id: 1, product_name: 'Men Relaxed Fit Poplin Casual Shirt', brand: 'Roadster', size: 'M', current_stock: 3, reorder_threshold: 8, lead_time_days: 5, supplier: 'Pacific Denim Dynamics' },
+    { id: 2, product_name: 'Women Embroidered Anarkali Kurta Set', brand: 'Anouk', size: 'L', current_stock: 4, reorder_threshold: 8, lead_time_days: 8, supplier: 'Apex Apparel Craftsmen' },
+    { id: 3, product_name: 'HRX Rapid-Dry Training Joggers', brand: 'HRX', size: 'M', current_stock: 2, reorder_threshold: 8, lead_time_days: 6, supplier: 'Vanguard Textile Mills Ltd' }
+  ],
+
+  // --- SETTINGS ---
+  '/settings': {
+    gemini_api_key_configured: false,
+    gemini_model: 'gemini-1.5-pro',
+    environment: 'production',
+    database_url: 'postgresql://postgres:***@localhost:5432/threadiq',
+    total_database_records: 27100,
+    system_version: '1.0.0'
+  },
+
+  '/settings/audit-logs': [
+    { id: 1, user_name: 'Aarav Sharma', action: 'ROLE_SWITCH', entity: 'USER', entity_id: '1', details: 'Switched role to Product Manager', timestamp: '5m ago' },
+    { id: 2, user_name: 'Diya Patel', action: 'EXPORT', entity: 'ANALYTICS', entity_id: 'FUNNEL', details: 'Exported 6-Stage Funnel to Excel', timestamp: '22m ago' },
+    { id: 3, user_name: 'Rohan Verma', action: 'FEATURE_FLAG_UPDATE', entity: 'EXPERIMENT', entity_id: 'ff_size_recommender_v2', details: 'Updated rollout to 50%', timestamp: '1h ago' }
   ]
 };
 
