@@ -11,7 +11,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15.0-336791?logo=postgresql)](https://www.postgresql.org)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Pro-4285F4?logo=google)](https://deepmind.google/technologies/gemini/)
 [![Pytest](https://img.shields.io/badge/Pytest-11_Passed-brightgreen?logo=pytest)](https://pytest.org)
-[![Vitest](https://img.shields.io/badge/Vitest-6_Passed-brightgreen?logo=vitest)](https://vitest.dev)
+[![Vitest](https://img.shields.io/badge/Vitest-23_Passed-brightgreen?logo=vitest)](https://vitest.dev)
 
 ---
 
@@ -70,7 +70,7 @@ flowchart TD
 | **Statistical Engine** | SciPy, NumPy, Pandas | Two-proportion z-tests, p-values, 95% confidence intervals, sample size power calculations, deterministic MD5 user variant bucketing. |
 | **AI Copilot** | Google Gemini 1.5 Pro, Generative AI SDK, Domain Knowledge Engine | 16 specialized PM workflows grounded in live DB records with deterministic fallback mode when API key is unconfigured. |
 | **Data Analytics** | Pandas, OpenPyXL, CSV, SQL | 6-stage funnel conversion diagnostics, root-cause friction breakdown, weekly retention cohorts, RFM segmentation, Tableau star-schema generator. |
-| **Testing & CI** | Pytest, HTTPX, Vitest, React Testing Library, GitHub Actions | 11 backend integration tests (100% pass), 4 frontend component tests (100% pass), automated CI pipeline. |
+| **Testing & CI** | Pytest, HTTPX, Vitest, React Testing Library, GitHub Actions | 11 backend integration tests (100% pass), 23 frontend component & route tests (100% pass), automated CI pipeline. |
 | **Deployment** | Docker, Docker Compose, Nginx Alpine, Multi-stage builds | Production-ready containerization for PostgreSQL, FastAPI, and Nginx SPA. |
 
 ---
