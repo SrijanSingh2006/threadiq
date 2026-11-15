@@ -19,6 +19,7 @@ import {
 import { api } from '../api/client';
 import { useStore } from '../store/useStore';
 import { Modal } from '../components/common/Modal';
+import { handleImageError, getProductFallbackImage } from '../utils/imageUtils';
 
 export const Storefront: React.FC = () => {
   const {
@@ -301,13 +302,11 @@ export const Storefront: React.FC = () => {
               {/* Product Card Image */}
               <div className="relative aspect-[3/4] overflow-hidden bg-slate-100 cursor-pointer" onClick={() => handleOpenPDP(prod)}>
                 <img
-                  src={prod.hero_image || prod.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
+                  src={prod.hero_image || prod.image_url || getProductFallbackImage(prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                   alt={prod.name}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.onerror = null;
-                    target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
-                  }}
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  onError={(e) => handleImageError(e, prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
 
@@ -414,13 +413,11 @@ export const Storefront: React.FC = () => {
             {/* Image Gallery */}
             <div className="space-y-3">
               <img
-                src={selectedProduct.hero_image || selectedProduct.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
+                src={selectedProduct.hero_image || selectedProduct.image_url || getProductFallbackImage(selectedProduct.name, selectedProduct.category?.name, selectedProduct.brand?.name || selectedProduct.brand)}
                 alt={selectedProduct.name}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
-                }}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+                onError={(e) => handleImageError(e, selectedProduct.name, selectedProduct.category?.name, selectedProduct.brand?.name || selectedProduct.brand)}
                 className="w-full aspect-[3/4] object-cover rounded-2xl border border-slate-200 shadow-sm"
               />
               <div className="flex items-center gap-2 text-[11px] text-slate-500 justify-center">

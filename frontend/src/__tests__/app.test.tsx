@@ -5,6 +5,8 @@ import { useStore } from '../store/useStore';
 import { Sidebar } from '../components/layout/Sidebar';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { BrowserRouter } from 'react-router-dom';
+import { getProductFallbackImage } from '../utils/imageUtils';
+import { api } from '../api/client';
 
 describe('ThreadIQ Frontend Core Architecture', () => {
   beforeEach(() => {
@@ -70,5 +72,26 @@ describe('ThreadIQ Frontend Core Architecture', () => {
     );
     expect(screen.getByText('Platform')).toBeInTheDocument();
     expect(screen.getByText('Overview')).toBeInTheDocument();
+  });
+
+  it('generates resilient SVG data URIs for product fallback images', () => {
+    const dataUri = getProductFallbackImage(
+      'Men Relaxed Fit Poplin Casual Shirt',
+      'Casual Shirts',
+      'Roadster'
+    );
+    expect(dataUri).toContain('data:image/svg+xml;utf8,');
+    const decoded = decodeURIComponent(dataUri.replace('data:image/svg+xml;utf8,', ''));
+    expect(decoded).toContain('<svg');
+    expect(decoded).toContain('ROADSTER');
+    expect(decoded).toContain('Casual Shirts');
+    expect(decoded).toContain('MR');
+  });
+
+  it('safely provides research data without throwing doctype HTML parsing errors', async () => {
+    const painPoints = await api.research.getPainPoints();
+    expect(Array.isArray(painPoints)).toBe(true);
+    expect(painPoints.length).toBeGreaterThan(0);
+    expect(painPoints[0]).toHaveProperty('title');
   });
 });

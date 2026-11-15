@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Trash2, ArrowRight, Check } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { handleImageError, getProductFallbackImage } from '../../utils/imageUtils';
 
 interface CompareDrawerProps {
   isOpen: boolean;
@@ -64,13 +65,11 @@ export const CompareDrawer: React.FC<CompareDrawerProps> = ({ isOpen, onClose })
                   {/* Hero & Title */}
                   <div className="relative mb-2">
                     <img
-                      src={prod.hero_image || prod.image_url || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80'}
+                      src={prod.hero_image || prod.image_url || getProductFallbackImage(prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                       alt={prod.name}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
-                      }}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                      onError={(e) => handleImageError(e, prod.name, prod.category?.name, prod.brand?.name || prod.brand)}
                       className="w-full h-36 object-cover rounded-lg border border-slate-200"
                     />
                     <button

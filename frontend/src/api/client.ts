@@ -15,11 +15,26 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       headers
     });
 
-    const contentType = response.headers.get('content-type') || '';
+    const contentType = (response.headers.get('content-type') || '').toLowerCase();
 
     // If status 200 and Content-Type is application/json, it's a real API response
     if (response.ok && contentType.includes('application/json')) {
-      return await response.json();
+      try {
+        const text = await response.text();
+        const trimmed = text.trim();
+        if (
+          trimmed.startsWith('<') ||
+          trimmed.toLowerCase().includes('<!doctype') ||
+          trimmed.toLowerCase().includes('<html')
+        ) {
+          const fallback = getMockFallback<T>(endpoint, options);
+          return fallback !== undefined ? fallback : getSafeGenericFallback<T>(endpoint);
+        }
+        return JSON.parse(text);
+      } catch (parseErr) {
+        const fallback = getMockFallback<T>(endpoint, options);
+        return fallback !== undefined ? fallback : getSafeGenericFallback<T>(endpoint);
+      }
     }
 
     // If response is HTML (Vercel SPA rewrite fallback returning <!doctype html>) or non-200
@@ -28,18 +43,32 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       return fallback;
     }
 
-    // Try reading error text if not HTML
-    const errorText = await response.text();
-    if (errorText.includes('<!doctype') || errorText.includes('<html')) {
+    // Try reading error text safely if not HTML
+    try {
+      const errorText = await response.text();
+      const lower = errorText.toLowerCase();
+      if (lower.includes('<!doctype') || lower.includes('<html') || lower.trim().startsWith('<')) {
+        return getSafeGenericFallback<T>(endpoint);
+      }
+
+      let errorDetail = response.statusText;
+      try {
+        const parsed = JSON.parse(errorText);
+        errorDetail = parsed.detail || errorDetail;
+      } catch {}
+      throw new Error(errorDetail || `Request failed with status ${response.status}`);
+    } catch (readErr: any) {
+      if (
+        readErr.message &&
+        !readErr.message.includes('<!doctype') &&
+        !readErr.message.includes('<html') &&
+        !readErr.message.includes('Unexpected token') &&
+        !readErr.message.includes('is not valid JSON')
+      ) {
+        throw readErr;
+      }
       return getSafeGenericFallback<T>(endpoint);
     }
-
-    let errorDetail = response.statusText;
-    try {
-      const parsed = JSON.parse(errorText);
-      errorDetail = parsed.detail || errorDetail;
-    } catch {}
-    throw new Error(errorDetail || `Request failed with status ${response.status}`);
   } catch (err: any) {
     // Network error, JSON parse failure on <!doctype, or offline mode
     const fallback = getMockFallback<T>(endpoint, options);
