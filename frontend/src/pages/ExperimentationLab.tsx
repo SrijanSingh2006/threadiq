@@ -261,7 +261,7 @@ export const ExperimentationLab: React.FC = () => {
                   <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                     <div className="flex justify-between items-center text-slate-500 font-semibold">
                       <span>Control (Baseline)</span>
-                      <span>n = {statsData.control.sample_size.toLocaleString()}</span>
+                      <span>n = {(statsData.control?.sample_size ?? 0).toLocaleString()}</span>
                     </div>
                     <div className="text-2xl font-bold text-slate-900">
                       {statsData.control.conversion_rate}%
@@ -275,7 +275,7 @@ export const ExperimentationLab: React.FC = () => {
                   <div className="p-4 rounded-xl bg-brand-50/60 border border-brand-200 space-y-2">
                     <div className="flex justify-between items-center text-brand-800 font-semibold">
                       <span>Variant B (Solution)</span>
-                      <span>n = {statsData.variant.sample_size.toLocaleString()}</span>
+                      <span>n = {(statsData.variant?.sample_size ?? 0).toLocaleString()}</span>
                     </div>
                     <div className="text-2xl font-bold text-brand-900 flex items-center gap-2">
                       <span>{statsData.variant.conversion_rate}%</span>

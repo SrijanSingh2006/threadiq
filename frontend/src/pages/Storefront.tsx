@@ -613,7 +613,7 @@ export const Storefront: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Total Amount Paid:</span>
-                  <span className="font-bold text-slate-900">₹{trackedOrder.final_amount.toLocaleString()}</span>
+                  <span className="font-bold text-slate-900">₹{(trackedOrder.final_amount ?? 0).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Tracking Reference:</span>
@@ -629,7 +629,7 @@ export const Storefront: React.FC = () => {
                     <div>
                       <h4 className="font-bold text-slate-800">{item.product?.name || `Product #${item.product_id}`}</h4>
                       <div className="text-slate-500 text-[11px] mt-0.5">
-                        Size: {item.size} • Qty: {item.quantity} • ₹{item.total_price.toLocaleString()}
+                        Size: {item.size} • Qty: {item.quantity} • ₹{(item.total_price ?? 0).toLocaleString()}
                       </div>
                     </div>
 

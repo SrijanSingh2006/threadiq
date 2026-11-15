@@ -146,7 +146,7 @@ export const OperationsIntelligence: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <span className="text-slate-400 block text-[10px]">Total Available Stock</span>
-                <span className="text-lg font-bold text-slate-900">{outbound.total_stock_units.toLocaleString()} Units</span>
+                <span className="text-lg font-bold text-slate-900">{(outbound?.total_stock_units ?? 0).toLocaleString()} Units</span>
               </div>
               <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
                 <span className="text-amber-700 block text-[10px]">Aged Inventory (&gt;30 Days)</span>

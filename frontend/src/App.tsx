@@ -6,6 +6,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { Breadcrumbs } from './components/layout/Breadcrumbs';
 import { ToastContainer } from './components/common/ToastContainer';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { CartDrawer } from './components/storefront/CartDrawer';
 import { CompareDrawer } from './components/storefront/CompareDrawer';
 
@@ -49,27 +50,29 @@ export function App() {
           {/* Scrollable Page Body */}
           <main className="flex-1 overflow-y-auto px-6 py-5">
             <Breadcrumbs />
-            <Routes>
-              <Route path="/" element={<Overview />} />
-              <Route path="/customer-research" element={<CustomerResearch />} />
-              <Route path="/product-discovery" element={<ProductDiscovery />} />
-              <Route path="/market-intelligence" element={<MarketIntelligence />} />
-              <Route path="/storefront" element={<Storefront />} />
-              <Route path="/product-analytics" element={<ProductAnalytics />} />
-              <Route path="/experimentation" element={<ExperimentationLab />} />
-              <Route path="/roadmap" element={<ProductRoadmap />} />
-              <Route path="/sprint-workspace" element={<SprintWorkspace />} />
-              <Route path="/operations-intelligence" element={<OperationsIntelligence />} />
-              <Route path="/stakeholder-feedback" element={<StakeholderFeedback />} />
-              <Route path="/sop-management" element={<SOPManagement />} />
-              <Route path="/release-management" element={<ReleaseManagement />} />
-              <Route path="/launch-readiness" element={<LaunchReadiness />} />
-              <Route path="/ai-copilot" element={<AICopilot />} />
-              <Route path="/reports-exports" element={<ReportsExports />} />
-              <Route path="/settings" element={<Settings />} />
-              {/* Fallback */}
-              <Route path="*" element={<Overview />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Overview />} />
+                <Route path="/customer-research" element={<CustomerResearch />} />
+                <Route path="/product-discovery" element={<ProductDiscovery />} />
+                <Route path="/market-intelligence" element={<MarketIntelligence />} />
+                <Route path="/storefront" element={<Storefront />} />
+                <Route path="/product-analytics" element={<ProductAnalytics />} />
+                <Route path="/experimentation" element={<ExperimentationLab />} />
+                <Route path="/roadmap" element={<ProductRoadmap />} />
+                <Route path="/sprint-workspace" element={<SprintWorkspace />} />
+                <Route path="/operations-intelligence" element={<OperationsIntelligence />} />
+                <Route path="/stakeholder-feedback" element={<StakeholderFeedback />} />
+                <Route path="/sop-management" element={<SOPManagement />} />
+                <Route path="/release-management" element={<ReleaseManagement />} />
+                <Route path="/launch-readiness" element={<LaunchReadiness />} />
+                <Route path="/ai-copilot" element={<AICopilot />} />
+                <Route path="/reports-exports" element={<ReportsExports />} />
+                <Route path="/settings" element={<Settings />} />
+                {/* Fallback */}
+                <Route path="*" element={<Overview />} />
+              </Routes>
+            </ErrorBoundary>
           </main>
         </div>
 

@@ -26,7 +26,19 @@ export const MOCK_DATA: Record<string, any> = {
 
   // --- ANALYTICS ---
   '/analytics/funnel': {
+    funnel_name: 'Fashion Discovery to Checkout Funnel',
+    total_starters: 62450,
+    total_completers: 2024,
     total_sessions: 62450,
+    overall_conversion_rate: 3.24,
+    steps: [
+      { step_number: 1, step_name: 'Storefront Session', event_name: 'view_home', unique_users: 62450, total_events: 94100, conversion_from_previous_percent: 100.0, drop_off_from_previous_percent: 0.0, overall_conversion_percent: 100.0 },
+      { step_number: 2, step_name: 'Product Listing (PLP)', event_name: 'view_item_list', unique_users: 48500, total_events: 72000, conversion_from_previous_percent: 77.66, drop_off_from_previous_percent: 22.34, overall_conversion_percent: 77.66 },
+      { step_number: 3, step_name: 'Product Detail (PDP)', event_name: 'view_item', unique_users: 24200, total_events: 41000, conversion_from_previous_percent: 49.90, drop_off_from_previous_percent: 50.10, overall_conversion_percent: 38.75 },
+      { step_number: 4, step_name: 'Size & Fit Selection', event_name: 'select_size', unique_users: 12100, total_events: 19500, conversion_from_previous_percent: 50.00, drop_off_from_previous_percent: 50.00, overall_conversion_percent: 19.38 },
+      { step_number: 5, step_name: 'Add to Bag (Cart)', event_name: 'add_to_cart', unique_users: 5800, total_events: 7800, conversion_from_previous_percent: 47.93, drop_off_from_previous_percent: 52.07, overall_conversion_percent: 9.29 },
+      { step_number: 6, step_name: 'Order Placed (Purchase)', event_name: 'purchase', unique_users: 2024, total_events: 2410, conversion_from_previous_percent: 34.90, drop_off_from_previous_percent: 65.10, overall_conversion_percent: 3.24 }
+    ],
     stages: [
       { stage_number: 1, stage_name: 'Storefront Session', event_name: 'view_home', visitor_count: 62450, stage_conversion_rate: 100.0, cumulative_conversion_rate: 100.0, drop_off_count: 0, drop_off_rate: 0.0 },
       { stage_number: 2, stage_name: 'Product Listing (PLP)', event_name: 'view_item_list', visitor_count: 48500, stage_conversion_rate: 77.66, cumulative_conversion_rate: 77.66, drop_off_count: 13950, drop_off_rate: 22.34 },
@@ -42,6 +54,19 @@ export const MOCK_DATA: Record<string, any> = {
   '/analytics/root-cause': {
     stage_name: 'Size & Fit Selection',
     total_drop_offs: 12100,
+    root_cause_hypothesis: 'Brand sizing variance up to 2.5 inches in chest/waist measurements between Ethnic and Western wear causes shoppers to abandon carts before sizing commitment.',
+    recommended_product_action: 'Deploy Smart Size Advisor widget with ML fit-history predictions on apparel PDPs.',
+    top_drop_off_categories: [
+      { category: 'Ethnic Wear (Kurtas & Sets)', views: 8400, cart_conversion_pct: 18.2 },
+      { category: 'Western Dresses & Tops', views: 6200, cart_conversion_pct: 22.4 },
+      { category: 'Denim & Slim Jeans', views: 4900, cart_conversion_pct: 26.8 },
+      { category: 'Formal Blazers & Suits', views: 3100, cart_conversion_pct: 29.5 }
+    ],
+    friction_queries: [
+      { query: 'size M chest size in inches', search_count: 1240, bounce_rate_pct: 42.1 },
+      { query: 'anouk kurta fitting reviews', search_count: 980, bounce_rate_pct: 38.6 },
+      { query: 'roadster shirt slim or regular', search_count: 850, bounce_rate_pct: 36.2 }
+    ],
     friction_reasons: [
       { reason: 'Size chart ambiguous or non-standard across brands', percentage: 38.4, affected_users: 4646, severity: 'High' },
       { reason: 'Desired size variant Out of Stock (OOS)', percentage: 26.2, affected_users: 3170, severity: 'High' },
@@ -51,25 +76,24 @@ export const MOCK_DATA: Record<string, any> = {
   },
 
   '/analytics/cohorts': {
+    period_type: 'weekly',
     cohorts: [
-      { cohort_week: '2025-W01', users_acquired: 650, retention: [100.0, 38.2, 29.5, 24.1, 21.0, 19.4, 18.2, 17.5] },
-      { cohort_week: '2025-W02', users_acquired: 720, retention: [100.0, 41.0, 31.2, 26.0, 22.8, 20.1, 19.0, null] },
-      { cohort_week: '2025-W03', users_acquired: 680, retention: [100.0, 39.5, 30.1, 25.4, 21.9, 19.8, null, null] },
-      { cohort_week: '2025-W04', users_acquired: 810, retention: [100.0, 44.2, 34.0, 28.5, 24.6, null, null, null] },
-      { cohort_week: '2025-W05', users_acquired: 790, retention: [100.0, 43.8, 33.5, 27.9, null, null, null, null] },
-      { cohort_week: '2025-W06', users_acquired: 850, retention: [100.0, 45.1, 35.2, null, null, null, null, null] },
-      { cohort_week: '2025-W07', users_acquired: 910, retention: [100.0, 47.0, null, null, null, null, null, null] },
-      { cohort_week: '2025-W08', users_acquired: 940, retention: [100.0, null, null, null, null, null, null, null] }
+      { cohort_period: '2026-W01', cohort_size: 650, retention_rates: [100.0, 38.2, 29.5, 24.1, 21.0, 19.4, 18.2, 17.5], retention: [100.0, 38.2, 29.5, 24.1, 21.0, 19.4, 18.2, 17.5] },
+      { cohort_period: '2026-W02', cohort_size: 720, retention_rates: [100.0, 41.0, 31.2, 26.0, 22.8, 20.1, 19.0, 0], retention: [100.0, 41.0, 31.2, 26.0, 22.8, 20.1, 19.0, null] },
+      { cohort_period: '2026-W03', cohort_size: 680, retention_rates: [100.0, 39.5, 30.1, 25.4, 21.9, 19.8, 0, 0], retention: [100.0, 39.5, 30.1, 25.4, 21.9, 19.8, null, null] },
+      { cohort_period: '2026-W04', cohort_size: 810, retention_rates: [100.0, 44.2, 34.0, 28.5, 24.6, 0, 0, 0], retention: [100.0, 44.2, 34.0, 28.5, 24.6, null, null, null] },
+      { cohort_period: '2026-W05', cohort_size: 790, retention_rates: [100.0, 43.8, 33.5, 27.9, 0, 0, 0, 0], retention: [100.0, 43.8, 33.5, 27.9, null, null, null, null] },
+      { cohort_period: '2026-W06', cohort_size: 850, retention_rates: [100.0, 45.1, 35.2, 0, 0, 0, 0, 0], retention: [100.0, 45.1, 35.2, null, null, null, null, null] }
     ]
   },
 
   '/analytics/rfm': {
     segments: [
-      { segment: 'Champions', count: 780, percentage: 15.6, avg_monetary: 7420, avg_frequency: 6.2, avg_recency_days: 12 },
-      { segment: 'Loyal Customers', count: 1240, percentage: 24.8, avg_monetary: 4890, avg_frequency: 4.1, avg_recency_days: 28 },
-      { segment: 'Potential Loyalists', count: 1120, percentage: 22.4, avg_monetary: 2950, avg_frequency: 2.3, avg_recency_days: 45 },
-      { segment: 'At Risk', count: 960, percentage: 19.2, avg_monetary: 3200, avg_frequency: 2.1, avg_recency_days: 110 },
-      { segment: 'Hibernating / Churned', count: 900, percentage: 18.0, avg_monetary: 1450, avg_frequency: 1.2, avg_recency_days: 210 }
+      { segment_name: 'Champions', segment: 'Champions', customer_count: 780, count: 780, percentage: 15.6, avg_monetary_inr: 7420, avg_monetary: 7420, avg_frequency_orders: 6.2, avg_frequency: 6.2, avg_recency_days: 12, description: 'High-value frequent shoppers with highest lifetime GMV contribution and lowest return propensity.' },
+      { segment_name: 'Loyal Customers', segment: 'Loyal Customers', customer_count: 1240, count: 1240, percentage: 24.8, avg_monetary_inr: 4890, avg_monetary: 4890, avg_frequency_orders: 4.1, avg_frequency: 4.1, avg_recency_days: 28, description: 'Consistent repeat fashion buyers responsive to seasonal brand promotions and new trend drops.' },
+      { segment_name: 'Potential Loyalists', segment: 'Potential Loyalists', customer_count: 1120, count: 1120, percentage: 22.4, avg_monetary_inr: 2950, avg_monetary: 2950, avg_frequency_orders: 2.3, avg_frequency: 2.3, avg_recency_days: 45, description: 'Recent purchasers with above-average basket sizes who can be converted via personalised size recommendations.' },
+      { segment_name: 'At Risk', segment: 'At Risk', customer_count: 860, count: 860, percentage: 17.2, avg_monetary_inr: 3200, avg_monetary: 3200, avg_frequency_orders: 2.1, avg_frequency: 2.1, avg_recency_days: 82, description: 'Previously active customers whose last order occurred over 75 days ago, typically due to return friction.' },
+      { segment_name: 'Hibernating / Lost', segment: 'Hibernating / Lost', customer_count: 1000, count: 1000, percentage: 20.0, avg_monetary_inr: 1650, avg_monetary: 1650, avg_frequency_orders: 1.1, avg_frequency: 1.1, avg_recency_days: 160, description: 'One-off clearance shoppers who have not interacted in 5+ months; candidates for win-back reactivation.' }
     ]
   },
 
@@ -541,10 +565,70 @@ export const MOCK_DATA: Record<string, any> = {
   ],
 
   '/delivery/roadmap': [
-    { id: 1, title: 'Size & Fit Recommender Engine', quarter: 'Q1 2025', status: 'Active', target_date: '2025-03-31', owner: 'Aarav Sharma', progress: 85, impact: 'High' },
-    { id: 2, title: 'Next-Gen First-Party Telemetry & Funnels', quarter: 'Q1 2025', status: 'Active', target_date: '2025-03-15', owner: 'Diya Patel', progress: 95, impact: 'High' },
-    { id: 3, title: 'Instant Size Exchange Logistics Portal', quarter: 'Q2 2025', status: 'Planning', target_date: '2025-06-30', owner: 'Vikram Rao', progress: 30, impact: 'Medium' },
-    { id: 4, title: 'UGC Daylight Style Discovery Feed', quarter: 'Q3 2025', status: 'Backlog', target_date: '2025-09-30', owner: 'Ananya Iyer', progress: 10, impact: 'High' }
+    {
+      id: 1,
+      title: 'Smart Size & Fit Intelligence Engine',
+      objective: 'Deploy ML-driven size recommendations on PDPs to reduce sizing returns by 18%.',
+      quarter: 'Q1 2026',
+      status: 'Active',
+      priority: 'P0',
+      reach: 120000,
+      impact: 3.0,
+      confidence: 0.9,
+      effort: 1.5,
+      rice_score: 216000,
+      target_date: '2026-03-31',
+      owner: 'Aarav Sharma (PM)',
+      progress: 85
+    },
+    {
+      id: 2,
+      title: '1st-Party Telemetry & Funnel Friction Pipeline',
+      objective: 'Capture client micro-events to isolate drop-offs at size selection and checkout.',
+      quarter: 'Q1 2026',
+      status: 'Active',
+      priority: 'P0',
+      reach: 95000,
+      impact: 2.5,
+      confidence: 0.95,
+      effort: 1.0,
+      rice_score: 225625,
+      target_date: '2026-03-15',
+      owner: 'Diya Patel (Analytics)',
+      progress: 95
+    },
+    {
+      id: 3,
+      title: 'Instant Doorstep Size Exchange Logistics Portal',
+      objective: 'Enable delivery riders to hand over exchange sizes immediately at customer doorstep.',
+      quarter: 'Q2 2026',
+      status: 'Planning',
+      priority: 'P1',
+      reach: 60000,
+      impact: 2.5,
+      confidence: 0.8,
+      effort: 2.0,
+      rice_score: 60000,
+      target_date: '2026-06-30',
+      owner: 'Vikram Rao (Ops)',
+      progress: 30
+    },
+    {
+      id: 4,
+      title: 'UGC Daylight Style & Verified Fit Community Feed',
+      objective: 'Crowdsource daylight photos and verified body measurements from real purchasers.',
+      quarter: 'Q3 2026',
+      status: 'Backlog',
+      priority: 'P2',
+      reach: 45000,
+      impact: 2.0,
+      confidence: 0.75,
+      effort: 1.5,
+      rice_score: 45000,
+      target_date: '2026-09-30',
+      owner: 'Ananya Iyer (Design)',
+      progress: 10
+    }
   ],
 
   '/delivery/risks': [

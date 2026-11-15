@@ -172,7 +172,7 @@ export const Overview: React.FC = () => {
           <Users className="w-4 h-4 text-slate-500" />
           <div>
             <span className="text-slate-500 block text-[10px]">Synthetic Shoppers:</span>
-            <span className="font-bold text-slate-800">{kpis.total_customers.toLocaleString()} Profiles</span>
+            <span className="font-bold text-slate-800">{(kpis?.total_customers ?? 0).toLocaleString()} Profiles</span>
           </div>
         </div>
         <div className="flex items-center gap-2">

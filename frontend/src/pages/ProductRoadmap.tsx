@@ -158,34 +158,44 @@ export const ProductRoadmap: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {initiatives.map((init, idx) => (
-                  <tr key={init.id} className="hover:bg-slate-50/50">
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-slate-100 font-bold text-slate-600 flex items-center justify-center text-[10px]">
-                          {idx + 1}
-                        </span>
-                        <div>
-                          <span className="font-bold text-slate-900 block">{init.title}</span>
-                          <span className="text-[11px] text-slate-500">{init.objective}</span>
+                {(Array.isArray(initiatives) ? initiatives : []).map((init, idx) => {
+                  const reach = Number(init.reach ?? 50000);
+                  const impact = typeof init.impact === 'number' ? init.impact : (Number(init.impact) || 3.0);
+                  const confidence = typeof init.confidence === 'number' ? init.confidence : (Number(init.confidence) || 0.8);
+                  const effort = typeof init.effort === 'number' ? init.effort : (Number(init.effort) || 1.5);
+                  const riceScore = typeof init.rice_score === 'number'
+                    ? init.rice_score
+                    : Math.round((reach * impact * confidence) / Math.max(effort, 0.1));
+
+                  return (
+                    <tr key={init.id} className="hover:bg-slate-50/50">
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-slate-100 font-bold text-slate-600 flex items-center justify-center text-[10px]">
+                            {idx + 1}
+                          </span>
+                          <div>
+                            <span className="font-bold text-slate-900 block">{init.title}</span>
+                            <span className="text-[11px] text-slate-500">{init.objective || init.summary || 'Drive fashion commerce discovery and lower returns.'}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4 font-semibold text-slate-700">{init.quarter}</td>
-                    <td className="p-4 font-mono text-slate-800">{init.reach.toLocaleString()}</td>
-                    <td className="p-4 text-slate-700">{init.impact}x</td>
-                    <td className="p-4 text-slate-700">{(init.confidence * 100).toFixed(0)}%</td>
-                    <td className="p-4 text-slate-700">{init.effort} mo</td>
-                    <td className="p-4 font-bold text-brand-700 text-sm font-mono">
-                      {Math.round(init.rice_score).toLocaleString()}
-                    </td>
-                    <td className="p-4">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
-                        {init.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="p-4 font-semibold text-slate-700">{init.quarter || 'Q1 2026'}</td>
+                      <td className="p-4 font-mono text-slate-800">{reach.toLocaleString()}</td>
+                      <td className="p-4 text-slate-700">{impact}x</td>
+                      <td className="p-4 text-slate-700">{(confidence * 100).toFixed(0)}%</td>
+                      <td className="p-4 text-slate-700">{effort} mo</td>
+                      <td className="p-4 font-bold text-brand-700 text-sm font-mono">
+                        {Math.round(riceScore).toLocaleString()}
+                      </td>
+                      <td className="p-4">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+                          {init.status || 'Active'}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

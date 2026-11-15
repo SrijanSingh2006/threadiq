@@ -238,7 +238,7 @@ export const Settings: React.FC = () => {
                   <td className="p-3.5 text-slate-700">{log.user_name || 'System'}</td>
                   <td className="p-3.5 text-slate-500 truncate max-w-xs">{log.details}</td>
                   <td className="p-3.5 text-slate-400 font-mono text-[11px]">
-                    {new Date(log.timestamp).toLocaleString()}
+                    {log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Just now'}
                   </td>
                 </tr>
               ))}
