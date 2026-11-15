@@ -62,7 +62,7 @@ export const Sidebar: React.FC = () => {
       groupName: 'DELIVERY & OPERATIONS',
       items: [
         { name: 'Product Roadmap', path: '/roadmap', icon: Map },
-        { name: 'Sprint Workspace', path: '/sprint-workspace', icon: KanbanSquare, badge: 'Sprint 42' },
+        { name: 'Sprint Workspace', path: '/sprint-workspace', icon: KanbanSquare, badge: 'Sprint 14' },
         { name: 'Operations Intelligence', path: '/operations-intelligence', icon: Boxes },
         { name: 'Stakeholder Feedback', path: '/stakeholder-feedback', icon: MessageSquareShare },
         { name: 'SOP Management', path: '/sop-management', icon: FileCheck2 },
