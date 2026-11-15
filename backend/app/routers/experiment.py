@@ -29,13 +29,6 @@ def get_experiments(status: Optional[str] = None, db: Session = Depends(get_db))
         q = q.filter(Experiment.status == status)
     return q.all()
 
-@router.get("/{experiment_id}", response_model=ExperimentOut)
-def get_experiment(experiment_id: int, db: Session = Depends(get_db)):
-    exp = db.query(Experiment).filter(Experiment.id == experiment_id).first()
-    if not exp:
-        raise HTTPException(status_code=404, detail="Experiment not found")
-    return exp
-
 @router.post("", response_model=ExperimentOut)
 def create_experiment(exp_data: ExperimentCreate, db: Session = Depends(get_db)):
     exp = Experiment(
@@ -237,3 +230,10 @@ def submit_usability_result(item: UsabilityTestResultCreate, db: Session = Depen
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+@router.get("/{experiment_id}", response_model=ExperimentOut)
+def get_experiment(experiment_id: int, db: Session = Depends(get_db)):
+    exp = db.query(Experiment).filter(Experiment.id == experiment_id).first()
+    if not exp:
+        raise HTTPException(status_code=404, detail="Experiment not found")
+    return exp

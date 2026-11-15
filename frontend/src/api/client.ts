@@ -170,28 +170,37 @@ function getMockFallback<T>(endpoint: string, options: RequestInit): T | undefin
 
     if (cleanEndpoint.startsWith('/copilot/generate')) {
       const promptText = body.prompt || '';
-      const workflow = body.workflow_type || 'Product Management Intelligence';
+      const workflow = body.workflow_type || 'feedback_summarisation';
 
-      return {
-        insight: `### ThreadIQ Intelligence Output: ${workflow}
-
-#### 1. Strategic Context & Data Grounding
+      const summaryMarkdown = `### Strategic Context & Data Grounding
 Based on synthesized behavioral data across **62,450 sessions**, **100 catalog SKUs**, and **20,000 first-party product events**:
 - **Primary Funnel Drop-off**: Size & Fit Selection accounts for **50.0%** of customer drop-offs on Western Wear and Ethnic categories.
 - **Root Cause Friction**: 38.4% of sizing drop-offs stem from non-standard size charts across third-party brands, and 58.2% of post-purchase returns cite size mismatch.
-- **Active Experimentation**: EXP-SIZE-FIT-01 demonstrates a **+18.0% conversion lift** ($p < 0.001$, 99% confidence interval $[1.12\\%, 3.20\\%]$).
+- **Active Experimentation**: EXP-SIZE-FIT-01 demonstrates a **+18.0% conversion lift** ($p < 0.001$, 99% confidence interval $[1.12%, 3.20%]$).
 
-#### 2. Key Actionable Recommendations
-1. **Accelerate Universal Size Advisor Rollout**: Ramp up feature flag \`ff_size_recommender_v2\` from 50% to 100% across mobile web traffic.
-2. **Implement UGC Daylight Customer Photos**: Replace flat studio color swatches with verified customer daylight photographs to reduce color-related returns by an estimated **3.2%**.
-3. **Execute Automated Supplier Restock SOP**: Trigger 48-hour supplier alerts for high-velocity M and L size variants currently below safety stock threshold (< 5 units).
-
-#### 3. Cross-Functional RACI & Delivery
-- **Product & Design**: Finalize Figma WCAG-AA token specifications for size selector chips.
+### Cross-Functional RACI & Delivery
+- **Product & Design**: Finalize Figma token specifications for size selector chips.
 - **Engineering**: Land 1-click UPI intent checkout in Sprint 14 to capture ₹380,000 in monthly recovered GMV.
-- **Operations**: Sign revised 3PL courier SLA guaranteeing 24-hour express return-to-exchange pickups.`,
-        model: 'ThreadIQ Domain Knowledge Engine (Fallback Mode)',
-        grounding_records_queried: 142
+- **Operations**: Sign revised 3PL courier SLA guaranteeing 24-hour express return-to-exchange pickups.`;
+
+      return {
+        workflow_type: workflow,
+        title: `${workflow.replace(/_/g, ' ').toUpperCase()} Intelligence Summary`,
+        summary_markdown: summaryMarkdown,
+        actionable_items: [
+          'Accelerate Universal Size Advisor Rollout: Ramp up feature flag ff_size_recommender_v2 to 100%.',
+          'Implement UGC Daylight Customer Photos to reduce return discrepancy rates by 3.2%.',
+          'Trigger 48-hour automated supplier restock SOP alerts for high-velocity M and L size variants.'
+        ],
+        source_records_cited: [
+          'EXP-SIZE-FIT-01 (A/B Test)',
+          'PP-01 (Size Chart Ambiguity)',
+          'FB-MERCH-09 (Fabric Feel Feedback)',
+          'SOP-CAT-04 (Measurement Verification)'
+        ],
+        engine_mode: 'Deterministic Domain Intelligence (Demo Fallback)',
+        model_name: 'ThreadIQ Synthesizer v1.5',
+        confidence_note: 'Synthesized with 98.4% domain confidence based on platform telemetry and first-party customer feedback records.'
       } as unknown as T;
     }
 
